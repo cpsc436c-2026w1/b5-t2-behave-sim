@@ -65,17 +65,38 @@ def test_second_accept_is_refused():
     assert trips.driver_of("t-1") == "d-1"
 
 
+def test_accept_of_a_trip_that_was_not_requested_is_refused():
+    assert Trips().accept("t-9", "d-1") == REFUSED
+
+
+def two_accepts_before_either_write(conditional):
+    """Both accepts read the trip, then both write: neither has an answer when the other's write is sent."""
+    trips, answers, gate = Trips(), [], threading.Barrier(2)
+    trips.request("t-1")
+
+    def send(driver):
+        answers.append((driver, trips.accept("t-1", driver, before_write=gate.wait, conditional=conditional)))
+
+    threads = [threading.Thread(target=send, args=(d,)) for d in ("d-1", "d-2")]
+    [t.start() for t in threads]
+    [t.join() for t in threads]
+    return trips, answers
+
+
 def test_two_accepts_at_once_give_one_driver():
     for _ in range(200):
-        trips, answers, gate = Trips(), [], threading.Barrier(2)
-        trips.request("t-1")
-
-        def send(driver):
-            gate.wait()
-            answers.append((driver, trips.accept("t-1", driver)))
-
-        threads = [threading.Thread(target=send, args=(d,)) for d in ("d-1", "d-2")]
-        [t.start() for t in threads]
-        [t.join() for t in threads]
+        trips, answers = two_accepts_before_either_write(conditional=True)
         assert sorted(a for _, a in answers) == [ASSIGNED, REFUSED]
         assert trips.driver_of("t-1") == next(d for d, a in answers if a == ASSIGNED)
+
+
+def test_without_the_condition_both_drivers_are_told_assigned():
+    """The same two accepts with a check in the function and a plain write: the race the condition prevents."""
+    for _ in range(200):
+        _, answers = two_accepts_before_either_write(conditional=False)
+        assert sorted(a for _, a in answers) == [ASSIGNED, ASSIGNED]
+
+
+def test_batch_received_again_is_counted_once():
+    first, second = TWICE[0], TWICE[1]
+    assert count_requests([first, first, second], dedupe=True) == {(161, P): 2}

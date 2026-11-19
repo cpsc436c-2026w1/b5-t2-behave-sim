@@ -93,7 +93,7 @@ def stream(sim_id: str) -> tuple[list[dict], list[dict], list[dict]]:
 
 
 def double_accept(sim_id: str) -> tuple[list[dict], list[dict], list[dict]]:
-    """SIM03: each trip is requested once and accepted by two drivers; both accepts are received at one time."""
+    """SIM03: each trip is requested once and accepted by two drivers; both accepts carry one received_time."""
     cfg, rng = DATA_SETS[sim_id], random.Random(SEED)
     rows = [r for r in read_seed_rows() if r["pickup_zone_id"] == cfg["zone"]][:cfg["trips"]]
     events, deliveries, faults, n = [], [], [], 0

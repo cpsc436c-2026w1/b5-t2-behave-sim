@@ -1,5 +1,7 @@
-"""Steps for trip assignment (rule R080, RF030): one accept, and two accepts received at the same time."""
+"""Steps for trip assignment (rule R080, RF030): one accept, and two accepts sent before either has an answer."""
 import threading
+import time
+from datetime import datetime
 
 from behave import given, then, when
 
@@ -7,12 +9,15 @@ from rides.assign import ASSIGNED, REFUSED, Trips
 
 
 def accept_together(trips: Trips, accepts: list[tuple[str, str]]) -> dict:
-    """Send the accepts from one thread each, released at the same moment. Returns {(trip, driver): answer}."""
+    """Send the accepts from one thread each. Returns {(trip, driver): answer}.
+
+    Every accept reads the trip and then waits at the gate until all of them have read it. So each write is sent
+    before any other accept has an answer, and the conditional write decides.
+    """
     gate, answers = threading.Barrier(len(accepts)), {}
 
     def send(trip_id, driver_id):
-        gate.wait()
-        answers[(trip_id, driver_id)] = trips.accept(trip_id, driver_id)
+        answers[(trip_id, driver_id)] = trips.accept(trip_id, driver_id, before_write=gate.wait)
 
     threads = [threading.Thread(target=send, args=a) for a in accepts]
     for t in threads:
@@ -35,13 +40,20 @@ def step_accept(context, driver_id, trip_id):
     context.answers[(trip_id, driver_id)] = context.trips.accept(trip_id, driver_id)
 
 
-@when("these accepts are received at the same time:")
+@when("the accept of driver {driver_id} for trip {trip_id} is received at {received}")
+def step_accept_at(context, driver_id, trip_id, received):
+    started = time.monotonic()
+    context.answers[(trip_id, driver_id)] = context.trips.accept(trip_id, driver_id)
+    context.received, context.took_s = received, time.monotonic() - started
+
+
+@when("these accepts are sent together, each before the other has an answer:")
 def step_accept_table(context):
     accepts = [(row["trip_id"], row["driver_id"]) for row in context.table]
     context.answers.update(accept_together(context.trips, accepts))
 
 
-@when("the two accepts of every trip are received at the same time")
+@when("the two accepts of every trip are sent together, each before the other has an answer")
 def step_accept_data_set(context):
     context.trips, context.answers, context.pairs = Trips(), {}, {}
     for d in context.deliveries:
@@ -57,6 +69,15 @@ def step_accept_data_set(context):
 def step_refused(context, driver_id):
     answers = [a for (_, driver), a in context.answers.items() if driver == driver_id]
     assert answers == [REFUSED], f"driver {driver_id}: expected refused, the system answered {answers}"
+
+
+@then("by {deadline} driver {driver_id} has the answer that the accept is refused")
+def step_refused_by(context, deadline, driver_id):
+    """The time allowed is the deadline less the time of receipt; the time taken is measured around the accept."""
+    allowed_s = (datetime.fromisoformat(deadline[:-1]) - datetime.fromisoformat(context.received[:-1])).total_seconds()
+    answers = [a for (_, driver), a in context.answers.items() if driver == driver_id]
+    assert answers == [REFUSED], f"driver {driver_id}: expected refused, the system answered {answers}"
+    assert context.took_s <= allowed_s, f"driver {driver_id}: answer after {context.took_s:.2f} s, allowed {allowed_s:.0f} s"
 
 
 @then("trip {trip_id} is assigned to driver {driver_id}")

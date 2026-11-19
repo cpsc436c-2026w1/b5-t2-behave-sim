@@ -69,7 +69,8 @@ def test_planted_error_is_found(copy, name, file, old, new, message):
 
 
 def test_exemptions_are_not_problems(copy):
-    """R100 (story not in focus), RF050 (read:) and RQ010 have no Rule, and that is not a problem."""
+    """RF050 (read:) and RQ010 do not have a Rule, and R100 (story not in focus) may lose its Rule: not problems."""
+    change(copy, ASSIGN, "  @R100\n", "")
     result = run(copy)
     assert result.returncode == 0
     for code in ("R100", "RF050", "RQ010"):

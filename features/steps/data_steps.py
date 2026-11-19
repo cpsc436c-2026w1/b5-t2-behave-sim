@@ -12,6 +12,13 @@ def step_requests_table(context):
         context.deliveries.append(delivery)
 
 
+@given("the function fails after it counted {event_id} and receives both requests again")
+def step_batch_again(context, event_id):
+    """Lambda sends the whole batch again after a failure: the function sees the counted request a second time."""
+    done = [d["event_id"] for d in context.deliveries].index(event_id) + 1
+    context.deliveries = context.deliveries[:done] + context.deliveries
+
+
 @given('the simulated data set {sim_id} "{name}"')
 def step_data_set(context, sim_id, name):
     assert sim_id in DATA_SETS, f"{sim_id} is not a data set in sim/datasets.py"

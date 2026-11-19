@@ -2,6 +2,7 @@
 
 Same ids, same names, same numbers as the table there. Change a number in both places.
 SIM04 and SIM05 are described in the design and not generated in this example.
+SIM03 holds pairs of accepts; what makes a pair concurrent is how the example sends it (features/steps/assign_steps.py).
 """
 from datetime import datetime, timezone
 
