@@ -183,11 +183,11 @@ its rows are sampled and turned into events (part c), with the times moved to th
 
 | Id | Name | Kind | From | Holds | Rates and timing | Injected faults, and how often | Written to |
 |---|---|---|---|---|---|---|---|
-| SIM01 | `rush-hour` | event stream | DS01 (the sample) | the three events of each of the 837 trips: 2,511 events | 837 requests in the hour, 9 to 38 in a zone and period (*measured*); an event is received 1 s after its event time | `duplicate`: 4 requests delivered a second time, 2 to 30 s after the first; `late`: 2 other requests received 6 to 10 minutes late (exact counts) | `sim/data/SIM01/` and `s3://t00-lake-<account-id>/sim/SIM01/`, laid out as `raw/trip-events/` |
-| SIM02 | `quiet-zone` | event stream | DS01 (the sample) | as SIM01 without its faults, less the trips below: 2,331 events | as SIM01 | `quiet`: every event of the 60 trips requested in zone 48 between 09:25 and 09:35 is left out | `sim/data/SIM02/` and `s3://t00-lake-<account-id>/sim/SIM02/`, laid out as `raw/trip-events/` |
-| SIM03 | `double-accept` | two concurrent writers | DS01 (the sample) | the first 20 trips of zone 161: one request and two accepts each, from two different drivers: 60 events | the two accepts of a trip have the same `received_time`; their event times differ by 1 or 2 s; exactly one driver must get the trip | `later-first`: for 10 of the 20 trips the accept with the later event time is first in the file | `sim/data/SIM03/` and `s3://t00-lake-<account-id>/sim/SIM03/`, laid out as `raw/trip-events/` |
-| SIM04 | `trips-day` | batch file | DS01 (the subset) | one CSV file with the trips of zones 48, 161 and 230 completed on 2024-03-13 that have a fare above 0, as rows of `trip_completed` dated 2026-11-22: 18,593 rows (*measured*) | one file a night, arriving at 05:10 UTC | `no-fare`: 3 of the rows have an empty fare, so 18,590 load and 3 are rejected | `sim/data/SIM04/` and `s3://t00-lake-<account-id>/sim/SIM04/`, laid out as `raw/trip-exports/`; not generated in this example |
-| SIM05 | `raw-30-days` | lake table | DS01 (the subset) | table `trip_events_raw` after 30 days: events of the three zones for March 2024, about 1.6 million events (3 for each of 538,942 trips, *measured*) | one file a minute: 43,200 files (ours) | none; the sizes are a first guess, and we set them so that the count is slow before compaction | `s3://t00-lake-<account-id>/sim/SIM05/`, laid out as `raw/trip-events/`; not generated in this example |
+| SIM01 | `rush-hour` | event stream | DS01 (the sample); zone ids of DS02 | the three events of each of the 837 trips: 2,511 events | 837 requests in the hour, 9 to 38 in a zone and period (*measured*); an event is received 1 s after its event time | `duplicate`: 4 requests delivered a second time, 2 to 30 s after the first; `late`: 2 other requests received 6 to 10 minutes late (exact counts) | `sim/data/SIM01/` and `s3://t00-lake-<account-id>/sim/SIM01/`, laid out as `raw/trip-events/` |
+| SIM02 | `quiet-zone` | event stream | DS01 (the sample); zone ids of DS02 | as SIM01 without its faults, less the trips below: 2,331 events | as SIM01 | `quiet`: every event of the 60 trips requested in zone 48 between 09:25 and 09:35 is left out | `sim/data/SIM02/` and `s3://t00-lake-<account-id>/sim/SIM02/`, laid out as `raw/trip-events/` |
+| SIM03 | `double-accept` | two concurrent writers | DS01 (the sample); zone ids of DS02 | the first 20 trips of zone 161: one request and two accepts each, from two different drivers: 60 events | the two accepts of a trip have the same `received_time`; their event times differ by 1 or 2 s; exactly one driver must get the trip | `later-first`: for 10 of the 20 trips the accept with the later event time is first in the file | `sim/data/SIM03/` and `s3://t00-lake-<account-id>/sim/SIM03/`, laid out as `raw/trip-events/` |
+| SIM04 | `trips-day` | batch file | DS01 (the subset); zone ids of DS02 | one CSV file with the trips of zones 48, 161 and 230 completed on 2024-03-13 that have a fare above 0, as rows of `trip_completed` dated 2026-11-22: 18,593 rows (*measured*) | one file a night, arriving at 05:10 UTC | `no-fare`: 3 of the rows have an empty fare, so 18,590 load and 3 are rejected | `sim/data/SIM04/` and `s3://t00-lake-<account-id>/sim/SIM04/`, laid out as `raw/trip-exports/`; not generated in this example |
+| SIM05 | `raw-30-days` | lake table | DS01 (the subset); zone ids of DS02 | table `trip_events_raw` after 30 days: events of the three zones for March 2024, about 1.6 million events (3 for each of 538,942 trips, *measured*) | one file a minute: 43,200 files (ours) | none; the sizes are a first guess, and we set them so that the count is slow before compaction | `s3://t00-lake-<account-id>/sim/SIM05/`, laid out as `raw/trip-events/`; not generated in this example |
 
 The files of a stream data set (from Checkpoint 2; `uv run python -m sim.generate` writes them):
 
@@ -207,11 +207,11 @@ cases where the number of events matters.
 
 | Data set | Built from | Requirements | Scenarios (feature file: example) |
 |---|---|---|---|
-| SIM01 | DS01 | R010, RF010 | `js01_trips_per_zone.feature`: One simulated hour; One simulated hour with 4 requests delivered twice |
-| SIM02 | DS01 | RF020 | `js01_trips_per_zone.feature`: Zone 48 quiet for 10 minutes of a simulated hour |
-| SIM03 | DS01 | R080, RF030 | `trip_assignment.feature`: Twenty trips, two drivers each |
-| SIM04 | DS01 | R040, R050 | `js01_yesterdays_trips.feature`: File for 2026-11-22; File with 3 trips without a fare |
-| SIM05 | DS01 | RF040 | `js01_yesterdays_trips.feature`: Thirty days of small files |
+| SIM01 | DS01, DS02 | R010, RF010 | `js01_trips_per_zone.feature`: One simulated hour; One simulated hour with 4 requests delivered twice |
+| SIM02 | DS01, DS02 | RF020 | `js01_trips_per_zone.feature`: Zone 48 quiet for 10 minutes of a simulated hour |
+| SIM03 | DS01, DS02 | R080, RF030 | `trip_assignment.feature`: Twenty trips, two drivers each |
+| SIM04 | DS01, DS02 | R040, R050 | `js01_yesterdays_trips.feature`: File for 2026-11-22; File with 3 trips without a fare |
+| SIM05 | DS01, DS02 | RF040 | `js01_yesterdays_trips.feature`: Thirty days of small files |
 
-DS02 is used by every data set through the zone ids. R020, R030, R070 and R090 use tables inside their examples
+R020, R030, R070 and R090 use tables inside their examples
 and no data set.

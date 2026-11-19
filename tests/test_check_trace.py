@@ -55,7 +55,7 @@ PLANTED = [
      "| SIM03 | `double-accept` | two concurrent writers | DS01", "| SIM03 | `double-accept` | two concurrent writers | DS05",
      "SIM03 is built from DS05"),
     ("rule 7: a data set that names no source", DESIGN,
-     "| SIM03 | `double-accept` | two concurrent writers | DS01 (the sample)", "| SIM03 | `double-accept` | two concurrent writers | generated",
+     "| SIM03 | `double-accept` | two concurrent writers | DS01 (the sample); zone ids of DS02", "| SIM03 | `double-accept` | two concurrent writers | generated",
      "SIM03 does not name a DS"),
 ]
 

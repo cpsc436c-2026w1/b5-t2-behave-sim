@@ -1,0 +1,44 @@
+# Checkpoint 1 example: the rides case
+
+A complete example of what a team hands in for Checkpoint 1 of the CPSC 436C project, for a team "t00" whose
+system receives the trip events of a ride-hailing app (the case of lectures 1 to 14). It is built on public trip
+records of New York (NYC TLC, High Volume For-Hire Vehicle trips); `docs/design.md`, section Data, says exactly
+which, where they live and how the simulated events are made from them.
+
+## What is Checkpoint 1, and what is not
+
+**For Monday a team writes text only.** That is the upper part of the table. Tag `monday` of this repository is
+that state: `git checkout monday` shows it, `git checkout main` comes back.
+
+**The lower part shows where Checkpoint 2 goes** and is here so that the studio can run one worked example: a
+generator for three of the five data sets, and code for three of the twelve rules. The other rules stay drafts.
+
+| File | What it is | Due |
+|---|---|---|
+| `docs/proposal.md` | the proposal as tagged; sections 4 and 5 now point to the design | done |
+| `docs/requirements.md` | job stories JS01 to JS03 as headings; under each, requirement lines R010 … in EARS form; the Feedback 1 codes RF010 … and RQ010 in a table; one eval row; assumptions | Monday |
+| `docs/design.md` | workflows, resources with the script that will create each, and the section Data in five parts: (a) sources DS01 …, (b) where data lives in the bucket and the tables, (c) the fields of each event, (d) simulated data sets SIM01 …, (e) which requirement and scenario uses which data set | Monday |
+| `features/*.feature` | one feature for what a user gets, tagged with its stories; one `Rule:` for each code, tagged with the code; examples with small tables or a data set named by id | Monday |
+| `features/steps/.gitkeep` | an empty folder, so that the dry run works | Monday |
+| `tools/check_trace.py` | checks that every code and every data id is defined once and used where it must be | provided |
+| `sim/seed/ds01_sample.csv`, `tools/extract_seed.sql` | 837 rows of DS01 that the data sets are built from, and the query that wrote them | Checkpoint 2 |
+| `sim/datasets.py`, `sim/generate.py` | the data sets of part (d) as settings, and the generator that writes them to `sim/data/<id>/` | Checkpoint 2 |
+| `src/rides/counting.py`, `src/rides/assign.py` | local code for two things: the count of requests by zone and period, and the accept with a condition | Checkpoint 2 |
+| `features/environment.py`, `features/steps/*.py` | what makes the examples of RF010, RF020 and RF030 run | Checkpoint 2 |
+| `tests/` | pytest: the checker with one planted error for each rule, the generator's seed, the local code | Checkpoint 2 |
+| `DEMO.md` | the order to show all of this in the studio, with commands and their output | |
+
+## Commands
+
+```bash
+python3 tools/check_trace.py                      # traceability: 0 problems
+uvx behave@1.3.3 --dry-run --no-snippets          # every feature parses (Monday's check)
+uv run python -m sim.generate                     # write the simulated data sets
+uv run behave --no-snippets --tags=@RF010         # a duplicate is counted once
+uv run behave --no-snippets --tags=@RF020         # a quiet zone is shown as no data
+uv run behave --no-snippets --tags=@RF030         # two drivers, one trip
+DEDUPE=off uv run behave --no-snippets --tags=@RF010   # the duplicate check off: the example fails
+uv run pytest -q
+```
+
+Nothing here calls AWS. The data is from NYC TLC trip records ([terms](https://www.nyc.gov/main/terms-of-use)).
