@@ -1,4 +1,4 @@
-"""The generator: the same seed writes the same files, and the files hold what docs/design.md, section Data, Simulated data sets, says."""
+"""The generator: the same seed writes the same files, and the files hold what docs/design.md, section Data, Simulated data for the demos, says."""
 import hashlib
 from collections import Counter
 
