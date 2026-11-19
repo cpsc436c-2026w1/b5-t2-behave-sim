@@ -8,7 +8,7 @@ When demand moves between zones during the morning rush (about 840 requests an h
 number of trips requested in each pickup zone for each 5-minute period, and each morning yesterday's completed trips
 in one table, so that I can send free drivers where the requests are and check yesterday's fares.
 
-- **R010** WHEN a 5-minute period ends THE SYSTEM SHALL store one count of requested trips for each pickup zone that had a request in the period | within 60 s of the period's end (SLO) · test: `@R010`
+- **R010** WHEN a 5-minute period ends THE SYSTEM SHALL store one count of requested trips for each pickup zone that had a request in the period | within 60 s of the period's end, from the requests received by then (SLO) · test: `@R010`
 - **R020** IF a request is received after its period ended THEN THE SYSTEM SHALL add it to the stored count of the period of its event time, and store a count of 1 if its zone does not have a count for that period yet | a request received up to 10 minutes after its event time is in the count within 60 s of its receipt (SLO) · test: `@R020`
 - **R030** THE SYSTEM SHALL show every count with its zone and the start and end of its period · test: `@R030`
 - **R040** WHEN the file of a day's completed trips arrives THE SYSTEM SHALL load each row that has a fare above 0 into table `trips_curated` | a file that arrives by 05:30 UTC is loaded before 06:00 UTC (SLO) · test: `@R040`
