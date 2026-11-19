@@ -19,7 +19,7 @@ generator for three of the five data sets, and code for three of the twelve rule
 | `docs/requirements.md` | job stories JS01 to JS03 as headings; under each, requirement lines R010 … in EARS form; the Feedback 1 codes RF010 … and RQ010 in a table; one eval row; assumptions | Monday |
 | `docs/design.md` | workflows, resources with the script that will create each, and the section Data in five parts: (a) sources DS01 …, (b) where data lives in the bucket and the tables, (c) the fields of each event, (d) simulated data sets SIM01 …, (e) which requirement and scenario uses which data set | Monday |
 | `features/*.feature` | one feature for what a user gets, tagged with its stories; one `Rule:` for each code, tagged with the code; examples with small tables or a data set named by id | Monday |
-| `features/steps/.gitkeep` | an empty folder, so that the dry run works | Monday |
+| `features/steps/.gitkeep`, `behave.ini` | an empty folder, so that the dry run works; two display settings | Monday |
 | `tools/check_trace.py` | checks that every code and every data id is defined once and used where it must be | provided |
 | `sim/seed/ds01_sample.csv`, `tools/extract_seed.sql` | 837 rows of DS01 that the data sets are built from, and the query that wrote them | Checkpoint 2 |
 | `sim/datasets.py`, `sim/generate.py` | the data sets of part (d) as settings, and the generator that writes them to `sim/data/<id>/` | Checkpoint 2 |

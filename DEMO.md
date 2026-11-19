@@ -1,0 +1,204 @@
+# Studio demo: the rides example, file by file
+
+About one minute a step. Steps 1 to 8 are Checkpoint 1: **text that a team writes by Monday**, and the two checks
+of that text. Steps 9 to 12 show **where Checkpoint 2 goes**: the same text made to run. Nothing calls AWS.
+All output below is pasted from runs in this repository on 2026-11-19.
+
+Before the studio: `uv` installed; `uv sync` once in this folder.
+
+## Checkpoint 1: what a team writes for Monday
+
+| # | Show | Say |
+|---|---|---|
+| 1 | `README.md`, the table | the upper rows are Monday's hand-in, the lower rows are Checkpoint 2 |
+| 2 | `docs/requirements.md`, JS01 | a story is a heading; under it lines R010 … in five forms: WHEN (R010), IF … THEN (R020), no keyword (R030), WHERE with WHEN (R060), WHILE (R090 under JS03). A code is used once in the file |
+| 3 | `docs/requirements.md`, Constraints and requests | the Feedback 1 codes with their wording; `Check` starts with `examples tagged` (RF010 to RF040) or `read:` (RF050); RQ010 has a short note; the eval row for R060 |
+| 4 | `docs/design.md`, Data (a) Sources | the real data: DS01 with owner, terms, address, size, the subset with rows and GB; each number says measured, given or ours. Run the count below |
+| 5 | `docs/design.md`, Data (b) | the bucket as a tree; one row a prefix: table, format, what the folders mean, what writes it. `raw/` is JSONL by time of receipt, `curated/` is Parquet. Names only: nothing is created |
+| 6 | `docs/design.md`, Data (c) and (d) | a field table for each event, with where each field comes from; then SIM01 to SIM05: built from DS01, rates, injected faults with exact counts, seed, where the files will be written |
+| 7 | `features/js01_trips_per_zone.feature`, rule `@RF010` | story tag on the feature, code tag on the rule; one example with a 3-row table, one with `Given the simulated data set SIM01 "rush-hour"`. Then `trip_assignment.feature`: two story tags, a rule with two code tags (`@R080 @RF030`). Then the `@eval` gate in `js01_count_questions.feature` |
+| 8 | the two checks below | the traceability table, then the dry run on the Monday state |
+
+Step 4, one number of the Sources table checked (reads the file's footer over HTTPS):
+
+```
+$ echo "SELECT count(*) AS trips FROM 'https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-03.parquet';" | uvx --from duckdb-cli duckdb
+| trips:BIGINT |
+|---|
+| 21280788 |
+```
+
+Step 8, traceability:
+
+```
+$ python3 tools/check_trace.py
+Code   Defined                Used
+JS01   requirements.md:5      js01_count_questions.feature:2, js01_trips_per_zone.feature:2, js01_yesterdays_trips.feature:2
+R010   requirements.md:11     js01_trips_per_zone.feature:9, design.md (5 lines)
+R020   requirements.md:12     js01_trips_per_zone.feature:27, design.md (4 lines)
+R030   requirements.md:13     js01_trips_per_zone.feature:38, design.md (2 lines)
+R040   requirements.md:14     js01_yesterdays_trips.feature:8, design.md (4 lines)
+R050   requirements.md:15     js01_yesterdays_trips.feature:16, design.md (6 lines)
+R060   requirements.md:16     js01_count_questions.feature:6, design.md (1 lines)
+JS02   requirements.md:18     trip_assignment.feature:2
+R070   requirements.md:23     trip_assignment.feature:9, design.md (3 lines)
+R080   requirements.md:24     trip_assignment.feature:17, design.md (4 lines)
+JS03   requirements.md:26     trip_assignment.feature:2
+R090   requirements.md:32     trip_assignment.feature:44, design.md (2 lines)
+R100   requirements.md:33     no rule yet
+RF010  requirements.md:41     js01_trips_per_zone.feature:48, design.md (4 lines)
+RF020  requirements.md:42     js01_trips_per_zone.feature:67, design.md (3 lines)
+RF030  requirements.md:43     trip_assignment.feature:17, design.md (3 lines)
+RF040  requirements.md:44     js01_yesterdays_trips.feature:33, design.md (4 lines)
+RF050  requirements.md:45     design.md (1 lines)
+RQ010  requirements.md:46     design.md (1 lines)
+DS01   design.md:59           requirements.md:7, SIM01 (From), SIM02 (From), SIM03 (From), SIM04 (From), SIM05 (From)
+DS02   design.md:60           SIM01 (From), SIM02 (From), SIM03 (From), SIM04 (From), SIM05 (From)
+SIM01  design.md:186          js01_trips_per_zone.feature:22, js01_trips_per_zone.feature:60
+SIM02  design.md:187          js01_trips_per_zone.feature:81
+SIM03  design.md:188          trip_assignment.feature:36
+SIM04  design.md:189          js01_yesterdays_trips.feature:11, js01_yesterdays_trips.feature:28
+SIM05  design.md:190          js01_yesterdays_trips.feature:36
+
+26 codes and data ids, 0 problems
+$ echo $?
+0
+```
+
+R100 has no rule because JS03 is not a focus story; RF050 and RQ010 are read, not run. To see a problem, change
+`SIM02` to `SIM09` in the feature file and run it again:
+`PROBLEM js01_trips_per_zone.feature:81: SIM09 is not defined in docs/design.md, section Data`, exit code 1.
+
+Step 8, the dry run on what a team hands in (tag `monday`: no step code, `features/steps/.gitkeep` only):
+
+```
+$ git checkout -q monday
+$ uvx behave@1.3.3 --dry-run --no-snippets        # last lines
+0 features passed, 0 failed, 4 error, 0 skipped
+0 rules passed, 0 failed, 12 error, 0 skipped
+0 scenarios passed, 0 failed, 19 error, 0 skipped
+0 steps passed, 0 failed, 0 skipped, 68 undefined
+$ grep -c "^ *Example:" features/*.feature        # 19 in all
+features/js01_yesterdays_trips.feature:4
+features/js01_trips_per_zone.feature:8
+features/js01_count_questions.feature:2
+features/trip_assignment.feature:5
+$ git checkout -q main
+```
+
+"error" and "undefined" are what Monday looks like: every feature was read, and no step has code yet. The count
+of scenarios (19) equals the number of `Example:` lines.
+
+## Checkpoint 2: the same text, running
+
+| # | Show | Say |
+|---|---|---|
+| 9 | `sim/datasets.py` beside Data (d); run the generator | the table became settings; the id is the folder name; the folders are those of `raw/trip-events/` |
+| 10 | run `@RF010`; ask for a prediction; run it with `DEDUPE=off` | the example knew its answer before the system ran; with the check off the count is 3, not 2 |
+| 11 | run `@RF020` and `@RF030` | a zone without events is `no data`; two accepts at once, one driver |
+| 12 | `uv run pytest -q` | the generator's seed, the local code, the checker with a planted error for each rule |
+
+Step 9:
+
+```
+$ uv run python -m sim.generate
+SIM01 rush-hour: 2511 events, 2515 deliveries, 6 fault records (duplicate, late) -> sim/data/SIM01/
+SIM02 quiet-zone: 2331 events, 2331 deliveries, 1 fault records (quiet) -> sim/data/SIM02/
+SIM03 double-accept: 60 events, 60 deliveries, 10 fault records (later-first) -> sim/data/SIM03/
+$ find sim/data/SIM01 -name "*.jsonl" | sort
+sim/data/SIM01/_truth/events.jsonl
+sim/data/SIM01/_truth/faults.jsonl
+sim/data/SIM01/trip-events/dt=2026-11-23/hour=09/deliveries.jsonl
+sim/data/SIM01/trip-events/dt=2026-11-23/hour=10/deliveries.jsonl
+sim/data/SIM01/trip-events/dt=2026-11-23/hour=11/deliveries.jsonl
+```
+
+Step 10:
+
+```
+$ uv run behave --tags=@RF010
+@JS01
+Feature: Trips requested in each zone # features/js01_trips_per_zone.feature:2
+  Covers the first part of JS01 (operations analyst): the number of trips requested in each pickup zone for each
+  5-minute period. A period holds the requests with an event time from its start up to, and not including, its end.
+  A table holds the only events of its example. A column left out has the example value of its field in
+  docs/design.md, section Data, part (c). A simulated data set is named by its id and described in part (d).
+    Example: One request delivered twice                            # features/js01_trips_per_zone.feature:50
+      Given only these trip requests are received:                  # features/steps/data_steps.py:7
+        | event_id  | trip_id | pickup_zone_id | event_time           | received_time        |
+        | ev-000101 | t-0101  | 161            | 2026-11-23T09:11:00Z | 2026-11-23T09:11:01Z |
+        | ev-000102 | t-0102  | 161            | 2026-11-23T09:12:30Z | 2026-11-23T09:12:31Z |
+        | ev-000101 | t-0101  | 161            | 2026-11-23T09:11:00Z | 2026-11-23T09:12:40Z |
+      When the counts are read at 2026-11-23T09:16:00Z              # features/steps/count_steps.py:24
+      Then zone 161 shows 2 trips requested between 09:10 and 09:15 # features/steps/count_steps.py:29
+
+    Example: One simulated hour with 4 requests delivered twice                                # features/js01_trips_per_zone.feature:59
+      Given the simulated data set SIM01 "rush-hour"                                           # features/steps/data_steps.py:15
+      When the counts are read at 2026-11-23T10:11:00Z                                         # features/steps/count_steps.py:24
+      Then every zone and period shows the count computed from the data set's record of events # features/steps/count_steps.py:43
+
+1 feature passed, 0 failed, 3 skipped
+1 rule passed, 0 failed, 11 skipped
+2 scenarios passed, 0 failed, 17 skipped
+6 steps passed, 0 failed, 62 skipped
+Took 0min 0.000s
+```
+
+Prediction: the first example's table has 3 rows and 2 different `event_id`. What does the system count for zone
+161 between 09:10 and 09:15 when the duplicate check is off?
+
+```
+$ DEDUPE=off uv run behave --tags=@RF010          # from the first failure on
+      Then zone 161 shows 2 trips requested between 09:10 and 09:15 # features/steps/count_steps.py:29
+      ASSERT FAILED: zone 161, between 09:10 and 09:15: expected 2 trips requested, the system counted 3 (DEDUPE=off: the duplicate check is off)
+
+
+    Example: One simulated hour with 4 requests delivered twice                                # features/js01_trips_per_zone.feature:59
+      Given the simulated data set SIM01 "rush-hour"                                           # features/steps/data_steps.py:15
+      When the counts are read at 2026-11-23T10:11:00Z                                         # features/steps/count_steps.py:24
+      Then every zone and period shows the count computed from the data set's record of events # features/steps/count_steps.py:43
+      ASSERT FAILED: zone 48, between 09:00 and 09:05: expected 20 trips requested, the system counted 21 (DEDUPE=off: the duplicate check is off)
+
+
+
+Failing scenarios:
+  features/js01_trips_per_zone.feature:50  One request delivered twice
+  features/js01_trips_per_zone.feature:59  One simulated hour with 4 requests delivered twice
+
+0 features passed, 1 failed, 3 skipped
+0 rules passed, 1 failed, 11 skipped
+0 scenarios passed, 2 failed, 17 skipped
+4 steps passed, 2 failed, 62 skipped
+Took 0min 0.000s
+```
+
+Step 11 (last lines of each):
+
+```
+$ uv run behave --tags=@RF020
+1 feature passed, 0 failed, 3 skipped
+1 rule passed, 0 failed, 11 skipped
+2 scenarios passed, 0 failed, 17 skipped
+10 steps passed, 0 failed, 58 skipped
+Took 0min 0.000s
+$ uv run behave --tags=@RF030
+1 feature passed, 0 failed, 3 skipped
+1 rule passed, 0 failed, 11 skipped
+3 scenarios passed, 0 failed, 16 skipped
+13 steps passed, 0 failed, 55 skipped
+Took 0min 0.000s
+```
+
+Step 12:
+
+```
+$ uv run pytest -q
+............................                                             [100%]
+28 passed in 1.82s
+```
+
+## What stays a draft
+
+The rules R010, R020, R030, R040, R050, R060, R070, R090 and RF040 have examples and no step code; SIM04 and SIM05
+are described and not generated; no script in `scripts/` exists. That is the state the text is in on Monday for
+every rule.
