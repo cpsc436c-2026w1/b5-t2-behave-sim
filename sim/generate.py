@@ -41,7 +41,7 @@ def read_seed_rows() -> list[dict]:
 
 
 def trip_events(rows: list[dict], rng: random.Random) -> list[dict]:
-    """Three events for each trip. Fields are those of docs/design.md, section Data, part (c)."""
+    """Three events for each trip. Fields are those of docs/design.md, section Data, Event kinds."""
     events = []
     for row in rows:
         driver = f"d-{rng.randint(1, 200):04d}"                    # DS01 does not have drivers: ours
