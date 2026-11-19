@@ -76,18 +76,18 @@ $ git checkout -q monday
 $ uvx behave@1.3.3 --dry-run --no-snippets        # last lines
 0 features passed, 0 failed, 4 error, 0 skipped
 0 rules passed, 0 failed, 13 error, 0 skipped
-0 scenarios passed, 0 failed, 24 error, 0 skipped
-0 steps passed, 0 failed, 0 skipped, 94 undefined
-$ grep -c "^ *Example:" features/*.feature        # 24 in all
-features/js01_yesterdays_trips.feature:4
-features/trip_assignment.feature:6
-features/js01_trips_per_zone.feature:11
-features/js01_count_questions.feature:3
+0 scenarios passed, 0 failed, 17 error, 0 skipped
+0 steps passed, 0 failed, 0 skipped, 66 undefined
+$ grep -c "^ *Example:" features/*.feature        # 17 in all
+features/js01_yesterdays_trips.feature:3
+features/js01_count_questions.feature:2
+features/js01_trips_per_zone.feature:7
+features/trip_assignment.feature:5
 $ git checkout -q main
 ```
 
 "error" and "undefined" are what Monday looks like: every feature was read, and no step has code yet. The count
-of scenarios (24) equals the number of `Example:` lines.
+of scenarios (17) equals the number of `Example:` lines.
 
 ## Checkpoint 2: the same text, running
 
