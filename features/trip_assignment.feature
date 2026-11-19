@@ -10,7 +10,7 @@ Feature: One driver for each trip
 
     Example: One driver accepts
       Given trip t-0301 is requested
-      When driver d-0046 accepts trip t-0301 at 2026-11-23T09:20:05Z
+      When the accept of driver d-0046 for trip t-0301 is received at 2026-11-23T09:20:05Z
       Then by 2026-11-23T09:20:07Z driver d-0046 has the answer that the trip is assigned to them
 
   @R080 @RF030
