@@ -4,7 +4,7 @@ Team t00, the rides case: a ride-hailing app on New York taxi zones. Codes are u
 
 ## JS01 Operations analyst: trips requested in each zone (focus)
 
-When demand moves between zones during the morning rush (about 840 requests an hour in our three zones), I want the
+When demand moves between zones during the morning rush (about 840 requests an hour in our three zones, from DS01), I want the
 number of trips requested in each pickup zone for each 5-minute period, and each morning yesterday's completed trips
 in one table, so that I can send free drivers where the requests are and check yesterday's fares.
 
