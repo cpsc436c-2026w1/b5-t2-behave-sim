@@ -11,13 +11,13 @@ which, where they live and how the simulated events are made from them.
 that state: `git checkout monday` shows it, `git checkout main` comes back.
 
 **The lower part shows where Checkpoint 2 goes** and is here so that the studio can run one worked example: a
-generator for three of the five data sets, and code for three of the twelve rules. The other rules stay drafts.
+generator for three of the five data sets, and code for three of the thirteen rules. The other rules stay drafts.
 
 | File | What it is | Due |
 |---|---|---|
 | `docs/proposal.md` | the proposal as tagged; sections 4 and 5 now point to the design | done |
 | `docs/requirements.md` | job stories JS01 to JS03 as headings; under each, requirement lines R010 … in EARS form; the Feedback 1 codes RF010 … and RQ010 in a table; one eval row; assumptions | Monday |
-| `docs/design.md` | workflows, resources with the script that will create each, and the section Data in five parts: (a) sources DS01 …, (b) where data lives in the bucket and the tables, (c) the fields of each event, (d) simulated data sets SIM01 …, (e) which requirement and scenario uses which data set | Monday |
+| `docs/design.md` | a text sketch, workflows, resources with the script that will create each, what is outside the system, and the section Data in five parts: (a) sources DS01 …, (b) where data lives in the bucket and the tables, (c) the fields of each event with their valid values, (d) simulated data sets SIM01 …, (e) which requirement and scenario uses which data set | Monday |
 | `features/*.feature` | one feature for what a user gets, tagged with its stories; one `Rule:` for each code, tagged with the code; examples with small tables or a data set named by id | Monday |
 | `features/steps/.gitkeep`, `behave.ini` | an empty folder, so that the dry run works; two display settings | Monday |
 | `tools/check_trace.py` | checks that every code and every data id is defined once and used where it must be | provided |
