@@ -2,7 +2,7 @@
 Feature: One driver for each trip
   Covers JS02 (driver): whether the trip I accepted is mine.
   Covers JS03 (rider): which driver is coming.
-  A table holds the only accepts of its example. A simulated data set is named by its id and described in
+  A table holds the only accepts of its example. An accept is one request to our API. A simulated data set is named by its id and described in
   docs/design.md, section Data, part (d).
 
   @R070
@@ -19,22 +19,22 @@ Feature: One driver for each trip
     Example: Second driver accepts 4 seconds later
       Given trip t-0302 is requested
       And driver d-0046 accepts trip t-0302
-      When driver d-0131 accepts trip t-0302
-      Then driver d-0131 is refused
+      When the accept of driver d-0131 for trip t-0302 is received at 2026-11-23T09:20:09Z
+      Then by 2026-11-23T09:20:11Z driver d-0131 has the answer that the accept is refused
       And trip t-0302 is assigned to driver d-0046
 
     Example: Two drivers accept at the same time
       Given trip t-0303 is requested
-      When these accepts are received at the same time:
-        | event_id  | trip_id | driver_id | event_time           | received_time        |
-        | ev-000311 | t-0303  | d-0046    | 2026-11-23T09:20:05Z | 2026-11-23T09:20:06Z |
-        | ev-000312 | t-0303  | d-0131    | 2026-11-23T09:20:04Z | 2026-11-23T09:20:06Z |
+      When these accepts are sent together, each before the other has an answer:
+        | event_id  | trip_id | driver_id | event_time           |
+        | ev-000311 | t-0303  | d-0046    | 2026-11-23T09:20:05Z |
+        | ev-000312 | t-0303  | d-0131    | 2026-11-23T09:20:04Z |
       Then trip t-0303 is assigned to exactly one of drivers d-0046 and d-0131
       And 1 accept is refused
 
     Example: Twenty trips, two drivers each
       Given the simulated data set SIM03 "double-accept"
-      When the two accepts of every trip are received at the same time
+      When the two accepts of every trip are sent together, each before the other has an answer
       Then every trip is assigned to exactly one of its two drivers
       And 20 accepts are refused
 
@@ -48,3 +48,12 @@ Feature: One driver for each trip
       And driver d-0046 accepts trip t-0304
       When the rider of trip t-0304 asks who is coming
       Then the rider is shown driver d-0046
+
+  @R100
+  Rule: When a trip is completed, the rider is shown the fare
+
+    Example: Rider looks after the trip is completed
+      Given trip t-0305 is requested
+      And driver d-0046 accepts trip t-0305
+      When trip t-0305 is completed at 2026-11-23T09:41:00Z with fare 27.13
+      Then by 2026-11-23T09:41:05Z the rider of trip t-0305 is shown the fare 27.13
