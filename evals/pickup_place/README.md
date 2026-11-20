@@ -18,9 +18,11 @@ The gate is the `@eval` example in `features/js04_pickup_place.feature`; its ste
 at `ask_model_live`, where the call through the course LLM gateway goes: it is not written yet, because a live run
 spends money and waits for the instructor's go.
 
-Output below is pasted from runs on 2026-11-20, branch `main`.
+Output below is pasted from runs on 2026-11-20, branch `main`. Every run here is **checker only, recorded replies**:
+a pass shows that the checker and the gate work, not that the model meets R110. A claim about the model waits for a
+live run through the course LLM gateway, at Checkpoint 2.
 
-## Checker alone
+## Checker alone (checker only, recorded replies)
 
 ```
 $ python3 evals/pickup_place/check.py
@@ -39,7 +41,7 @@ case  reference                 correct  wrong runs
 pickup place correct in 26 of 30 runs (accuracy 0.87)
 ```
 
-## Feature on the recorded replies
+## Feature on the recorded replies (checker only, recorded replies)
 
 ```
 $ uvx behave@1.3.3 features/js04_pickup_place.feature

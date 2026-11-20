@@ -11,7 +11,7 @@ which, where they live and how the simulated events are made from them.
 that state: `git checkout cp1` shows it, `git checkout main` comes back.
 
 **The lower part shows where Checkpoint 2 goes** and is here so that the studio can run one worked example: a
-generator for three of the five data sets, and code for four of the thirteen rules (R110 on recorded replies). The other rules stay drafts.
+generator for three of the five data sets, and code for four of the fourteen rules (R110 checker only, on recorded replies). The other rules stay drafts.
 
 | File | What it is | Due |
 |---|---|---|
@@ -38,7 +38,7 @@ uv run python -m sim.generate                     # write the simulated data set
 uv run behave --no-snippets --tags=@RF010         # a duplicate is counted once
 uv run behave --no-snippets --tags=@RF020         # a quiet zone is shown as no data
 uv run behave --no-snippets --tags=@RF030         # two drivers, one trip
-uvx behave@1.3.3 features/js04_pickup_place.feature   # R110 and its eval, on recorded replies
+uvx behave@1.3.3 features/js04_pickup_place.feature   # checker only, recorded replies (R120's example: undefined)
 python3 evals/pickup_place/check.py               # the eval's checker alone: per case and the total
 DEDUPE=off uv run behave --no-snippets --tags=@RF010   # the duplicate check off: the example fails
 uv run pytest -q

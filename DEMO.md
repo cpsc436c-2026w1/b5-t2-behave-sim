@@ -99,7 +99,7 @@ scenarios (17 error and 3 untested, 20) equals the number of `Example:` lines.
 | 9 | `sim/datasets.py` beside Data, Simulated data for the demos; run the generator | the bullets became settings; the id is the folder name; the folders are those of `raw/trip-events/` |
 | 10 | run `@RF010`; ask for a prediction; run it with `DEDUPE=off` | the example knew its answer before the system ran; with the check off the count is 3, not 2, and the simulated hour with its 4 duplicates fails too |
 | 11 | run `@RF020` and `@RF030` | a zone without events is `no data`; two accepts, each sent before the other has an answer: the conditional write gives the trip to one driver and refuses the other |
-| 12 | run `features/js04_pickup_place.feature`; then `check.py` alone | the gate reads the eval's counts from its steps: 10 cases, 3 runs each, at least 24 of 30 correct. The replies are recorded examples written by hand; a live run through the course LLM gateway is not written yet |
+| 12 | run `features/js04_pickup_place.feature`; then `check.py` alone | the gate reads the eval's counts from its steps: 10 cases, 3 runs each, at least 24 of 30 correct. Checker only, recorded replies: the replies are examples written by hand, so a pass shows that the checker and the gate work, not that the model meets R110; that waits for a live run through the course LLM gateway, which is not written yet. R120's example is undefined: it is a draft |
 | 13 | `uv run pytest -q` | the generator's seed, the local code (with the two accepts without the condition: both drivers are told assigned), the checker with a planted error for each rule, the eval's checker |
 
 Step 9:
