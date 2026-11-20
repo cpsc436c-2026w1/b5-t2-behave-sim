@@ -40,17 +40,18 @@ Components: `t00-api`, `t00-read`, `t00-zone-counts`, `t00-trips`
 ### Lake and nightly jobs [R040, R050, RF040]
 
 Firehose writes the stream to the bucket about once a minute, and at 00:30 UTC the compaction job rewrites the day
-before as one Parquet file. The curation job loads the nightly export's completed trips with a fare above 0 before
-06:00 UTC and sets the other rows aside.
+before as one Parquet file. The curation job loads the nightly export's completed trips with a fare above 0 within
+30 minutes of the file's arrival (p95) and sets the other rows aside.
 
 Components: `t00-trip-events-to-lake`, `t00-lake-<account-id>`, `t00_lake`, `t00-compact-events`, `t00-curate-trips`
 
-### Pickup place of a message [R110]
+### Pickup place of a message [R110, R120]
 
 The support agent's page sends a rider's message through the API to the assistant function. The function sends it
 to the model through the course LLM gateway as the user message, with our list of places in the system prompt and
 the output format a JSON object with one field, `pickup_place`. The function shows the value if it is a name on the
-list or `null`; any other reply is shown as no answer.
+list, `null`, or `"more than one"` when the message names more than one pickup place; any other reply is shown as no
+answer.
 
 Components: `t00-api`, `t00-assistant`
 
@@ -67,14 +68,14 @@ carries the tags `Project=436c`, `Team=t00`, `Owner=<name>` (RF050). The scripts
 | Lambda function | `t00-track-trips` | `scripts/assignment.py up` | R070, R090, R100 |
 | Lambda function | `t00-assign-trip` | `scripts/assignment.py up` | R070, R080, RF030 |
 | DynamoDB table | `t00-trips` | `scripts/assignment.py up` | R070, R080, R090, R100, RF030 |
-| API Gateway HTTP API | `t00-api` | `scripts/api.py up` | R030, R070, R080, R090, R100, R110 |
+| API Gateway HTTP API | `t00-api` | `scripts/api.py up` | R030, R070, R080, R090, R100, R110, R120 |
 | Lambda function | `t00-read` | `scripts/api.py up` | R030, R090, R100, RF020 |
 | Firehose stream | `t00-trip-events-to-lake` | `scripts/lake.py up` | RF040 |
 | S3 bucket | `t00-lake-<account-id>` | `scripts/lake.py up` | R040, R050, RF040 |
 | Glue database and tables | `t00_lake` | `scripts/lake.py up` | R040, R050, RF040 |
 | Glue job | `t00-curate-trips` | `scripts/curate.py up` | R040, R050 |
 | Glue job, run every night at 00:30 UTC | `t00-compact-events` | `scripts/compact.py up` | RF040 |
-| Lambda function (the assistant) | `t00-assistant` | `scripts/assistant.py up` | R110 |
+| Lambda function (the assistant) | `t00-assistant` | `scripts/assistant.py up` | R110, R120 |
 
 Outside our system. We do not create these; our system relies on what the last column says.
 
