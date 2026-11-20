@@ -4,7 +4,7 @@ Team t00, the rides case: a ride-hailing app on New York taxi zones.
 
 ## JS01 Operations analyst: trips requested in each zone
 
-When demand moves between zones during the morning rush (about 840 completed trips an hour in our three zones in DS01,
+When demand moves between zones during the morning rush (837 completed trips in one morning hour in our three zones in DS01,
 *measured*, and one request for each, *assumed*, Q050), I want the number of trips requested in each pickup zone for
 each 5-minute period, and each morning yesterday's completed trips with a fare above 0 loaded into one table, so that
 I can send free drivers where the requests are and query yesterday's fares in that table.

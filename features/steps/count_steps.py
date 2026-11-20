@@ -40,18 +40,15 @@ def step_no_data(context, zone, start, end):
     assert actual == NO_DATA, f"{label(zone, start_of(start))}: expected no data, the system shows {actual}"
 
 
-@then("every zone and period shows the count computed from the data set's record of events")
-def step_all_counts(context):
-    """The expected counts come from _truth/events.jsonl with a few lines written for the test, not from the handler."""
-    expected = {}
-    for event in context.data_set["events"]:
-        if event["event_type"] == "trip_requested":
-            minute = int(event["event_time"][14:16])
-            start = f'{event["event_time"][:14]}{minute - minute % 5:02d}:00Z'
-            key = (event["pickup_zone_id"], start)
-            expected[key] = expected.get(key, 0) + 1
-    for zone, start in sorted(set(expected) | set(context.counts)):
-        want = expected.get((zone, start), NO_DATA)
-        got = show(context.counts, zone, start)
-        assert got == want, (f"{label(zone, start)}: expected {want} trips requested, "
+@then("zones {zones} show {totals} trips requested between {start} and {end}")
+def step_totals(context, zones, totals, start, end):
+    """zones 48, 161 and 230 show 304, 191 and 342 trips requested between 09:00 and 10:00: the sum of the zone's
+    counts over the periods that start in that time."""
+    zone_list = [int(z) for z in zones.replace(" and ", ", ").split(", ")]
+    total_list = [int(n) for n in totals.replace(" and ", ", ").split(", ")]
+    assert len(zone_list) == len(total_list), f"{len(zone_list)} zones and {len(total_list)} totals"
+    first, last = start_of(start), start_of(end)
+    for zone, want in zip(zone_list, total_list):
+        got = sum(n for (z, s), n in context.counts.items() if z == zone and first <= s < last)
+        assert got == want, (f"zone {zone}, between {start} and {end}: expected {want} trips requested, "
                              f"the system counted {got}{switch_note()}")

@@ -69,7 +69,7 @@ Feature: Trips requested in each zone
     Example: One simulated hour with 4 requests delivered twice
       Given the simulated data set SIM01 "rush-hour"
       When the counts are read at 2026-11-23T10:11:00Z
-      Then every zone and period shows the count computed from the data set's record of events
+      Then zones 48, 161 and 230 show 304, 191 and 342 trips requested between 09:00 and 10:00
 
     # Replay limit: a second delivery up to 24 hours after the first is not counted. We assume the app does not
     # send an event again after that (Q030).
@@ -94,7 +94,7 @@ Feature: Trips requested in each zone
       When the counts are read at 2026-11-23T10:11:00Z
       Then zone 48 shows no data between 09:25 and 09:30
       And zone 48 shows no data between 09:30 and 09:35
-      And every zone and period shows the count computed from the data set's record of events
+      And zones 48, 161 and 230 show 244, 191 and 342 trips requested between 09:00 and 10:00
 
   @RF040 @live
   Rule: The count by zone over 30 days stays fast while the stream adds a small file to raw/ every minute

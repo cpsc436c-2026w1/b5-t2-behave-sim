@@ -11,7 +11,7 @@ Feature: Yesterday's completed trips in one table
     Example: File for 2026-11-22
       Given the simulated data set SIM04 "trips-day"
       When the file for 2026-11-22 arrives at 2026-11-23T05:10:00Z
-      Then by 2026-11-23T05:30:00Z table trips_curated has 18590 rows for 2026-11-22
+      Then by 2026-11-23T05:30:00Z table trips_curated has 19074 rows for 2026-11-22
 
   @R050
   Rule: If a completed trip in the file has a fare that is missing, 0 or negative, it is left out of trips_curated and written to trips_rejected with the reason

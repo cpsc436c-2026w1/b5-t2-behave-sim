@@ -100,23 +100,28 @@ Outside our system. We do not create these; our system relies on what the last c
 DS01 is the High Volume For-Hire Vehicle trip records of the NYC Taxi and Limousine Commission: one row for each
 finished trip, one [Parquet file a month](https://d37ci6vzurychx.cloudfront.net/trip-data/fhvhv_tripdata_2024-03.parquet)
 over HTTPS ([trip record page](https://www.nyc.gov/site/tlc/about/tlc-trip-record-data.page)). We use the Uber trips
-picked up in Manhattan in March 2024: 6,045,943 of the month's 21,280,788 rows, 0.20 GB as Parquet (*measured*
-2026-11-19, DuckDB). DS02, the TLC [taxi zone lookup](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv),
-gives the borough and name of each of its 265 zones. The system's events are simulated from DS01 rows of zones 48,
-161 and 230, with their times moved to 2026-11-23.
+picked up in Manhattan in March 2024 (*our choice*): 6,045,943 of the month's 21,280,788 rows, 0.20 GB as Parquet
+(*measured* 2026-11-19, DuckDB). DS02, the TLC [taxi zone lookup](https://d37ci6vzurychx.cloudfront.net/misc/taxi_zone_lookup.csv),
+gives the borough and name of each of its 265 zones (*measured* 2026-11-20, DuckDB). The system's events are simulated
+from DS01 rows of zones 48, 161 and 230 (*our choice*); each bullet below says which days of DS01 it uses and the
+dates they are moved to (*our choice*).
 
 ### Simulated data for the demos
 
-- **SIM01 Rush hour** [RF010] One morning hour in zones 48, 161 and 230, taken from the real trips (DS01): about 840
-  trips. 4 requests arrive twice and 2 arrive 6 to 10 minutes late.
-- **SIM02 Quiet zone** [RF020] The same hour from DS01 without those faults, and zone 48 has no trips between 09:25
-  and 09:35.
-- **SIM03 Double accept** [R080, RF030] 20 trips of zone 161 from DS01, each accepted by two drivers at the same
-  moment; for 10 of them the later accept is first in the file.
-- **SIM04 Trips day** [R040] One day's file of completed trips in the three zones from DS01: 18,593 rows, 3 of them
-  without a fare above 0.
-- **SIM05 Thirty days** [RF040] 30 days of events in the three zones from DS01, about 525,000 trips, as one small
-  file a minute.
+- **SIM01 Rush hour** [RF010] One morning hour from DS01: the 837 trips requested in zones 48, 161 and 230 on
+  2024-03-14 between 08:00 and 09:00 New York time, moved to 09:00 to 10:00 UTC on 2026-11-23: 304, 191 and 342
+  trips, 2,511 events. 4 requests arrive twice and 2 arrive 6 to 10 minutes late.
+- **SIM02 Quiet zone** [RF020] SIM01's hour from DS01 without its 6 faults, and without the 60 trips of zone 48
+  requested between 09:25 and 09:35: 777 trips (244, 191 and 342 in zones 48, 161 and 230), 2,331 events.
+- **SIM03 Double accept** [R080, RF030] The first 20 trips of zone 161 in SIM01's hour from DS01, at the same times:
+  60 events, 20 requests and 40 accepts. Each trip is accepted by two drivers at the same moment; for 10 of the 20
+  trips the later accept is first in the file.
+- **SIM04 Trips day** [R040] One day's file of completed trips from DS01: the 19,074 trips requested in the three
+  zones on 2024-03-14 (*measured* 2026-11-20, DuckDB), moved to 2026-11-22, and 3 rows added with a bad fare: 1
+  without a fare, 1 with a fare of 0 and 1 with a negative fare. 19,077 rows.
+- **SIM05 Thirty days** [RF040] 30 days of events from DS01: the 524,629 trips requested in the three zones from
+  2024-03-01 to 2024-03-30 (142,310, 188,010 and 194,309 in zones 48, 161 and 230, *measured* 2026-11-20, DuckDB),
+  moved to 2026-10-24 to 2026-11-22, as one small file a minute: 43,200 files. No injected faults.
 
 **Event format** (each delivery also has `received_time`, set when the event arrives):
 
@@ -124,3 +129,9 @@ gives the borough and name of each of its 265 zones. The system's events are sim
 - `trip_accepted`: `event_id`, `trip_id`, `driver_id`, `event_time` (also the body of an accept sent to the API)
 - `trip_completed`: `trip_id`, `driver_id`, `dropoff_zone_id`, `trip_miles`, `trip_time_s`, `fare`, `driver_pay`,
   `event_time`
+
+From a DS01 row come the request time, the pickup and dropoff zones, `trip_miles`, `trip_time_s`, `fare` and
+`driver_pay`. DS01 does not have drivers or accepts, so the generator makes up the rest (*our choice*): `event_id`,
+`trip_id` and `driver_id`; the accept 3 to 15 s after the request; the completion 5 minutes plus the trip time after
+the accept; and `received_time`, 1 s after the event unless a bullet says otherwise. The rider messages of R110 and
+R120 are written by the team.

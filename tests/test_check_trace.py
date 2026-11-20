@@ -59,10 +59,10 @@ PLANTED = [
     ("rule 6: a source in the requirements that is not defined", REQ, "three zones in DS01,", "three zones in DS07,",
      "DS07 is not defined in docs/design.md"),
     ("rule 7: a data set built from a source that is not defined", DESIGN,
-     "- **SIM03 Double accept** [R080, RF030] 20 trips of zone 161 from DS01", "- **SIM03 Double accept** [R080, RF030] 20 trips of zone 161 from DS05",
+     "in SIM01's hour from DS01, at", "in SIM01's hour from DS05, at",
      "SIM03 is built from DS05"),
     ("rule 7: a data set that names no source", DESIGN,
-     "- **SIM03 Double accept** [R080, RF030] 20 trips of zone 161 from DS01", "- **SIM03 Double accept** [R080, RF030] 20 trips of zone 161, generated",
+     "in SIM01's hour from DS01, at", "in SIM01's hour, at",
      "SIM03 does not name a DS"),
 ]
 
