@@ -15,11 +15,12 @@ From Checkpoint 1 the stories are headings in [`requirements.md`](requirements.m
 - **JS01 Operations analyst: trips requested in each zone** (focus, operational and analytical)
 - **JS02 Driver: is the trip mine** (focus, operational)
 - **JS03 Rider: who is coming**
+- **JS04 Support agent: pickup place of a rider's message** (extension)
 
 ## 3. Project shape and extensions
 
 Operational first: the trips table answers drivers and riders, and the stream feeds the counts and the lake.
-Extension: an assistant that answers the analyst's questions about counts (R060).
+Extension: an assistant that finds the pickup place in a rider's message to support (JS04, R110).
 
 ## 4. Data and workflows
 
