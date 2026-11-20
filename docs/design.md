@@ -121,7 +121,7 @@ dates they are moved to (*our choice*).
   without a fare, 1 with a fare of 0 and 1 with a negative fare. 19,077 rows.
 - **SIM05 Thirty days** [RF040] 30 days of events from DS01: the 524,629 trips requested in the three zones from
   2024-03-01 to 2024-03-30 (142,310, 188,010 and 194,309 in zones 48, 161 and 230, *measured* 2026-11-20, DuckDB),
-  moved to 2026-10-24 to 2026-11-22, as one small file a minute: 43,200 files. No injected faults.
+  moved to 2026-10-24 to 2026-11-22, as one small file a minute: 43,200 files. It does not have injected faults.
 
 **Event format** (each delivery also has `received_time`, set when the event arrives):
 

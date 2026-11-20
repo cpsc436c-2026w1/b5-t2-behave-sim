@@ -37,7 +37,7 @@ place that the message names, or that it does not name one, so that I can find t
 rider was waiting.
 
 - **R110** WHERE the system includes the assistant, WHEN a support agent opens a rider's message THE SYSTEM SHALL show the pickup place that the message names, as a name from our list of places, or say that the message names no pickup place | eval `pickup-place`: at least 10 cases, each run 3 times, and the pickup place is correct in at least 80% of the runs (24 of 30 runs for 10 cases) [Scenario](../features/js04_pickup_place.feature)
-- **R120** IF a rider's message names more than one pickup place THEN THE SYSTEM SHALL say that the message names more than one pickup place, and show none of them as the pickup place [Scenario](../features/js04_pickup_place.feature)
+- **R120** IF a rider's message names more than one pickup place THEN THE SYSTEM SHALL say that the message names more than one pickup place, and not show any of them as the pickup place [Scenario](../features/js04_pickup_place.feature)
 
 ## Stakeholder input
 

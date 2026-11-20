@@ -27,7 +27,7 @@ Feature: Pickup place of a rider's message
       Then the pickup place is correct in at least 24 of the 30 runs
 
   @R120
-  Rule: If a rider's message names more than one pickup place, the system says so and shows none of them as the pickup place
+  Rule: If a rider's message names more than one pickup place, the system says so and does not show any of them as the pickup place
 
     Example: Message that names two pickup places
       Given the rider message "Pick me up at Penn Station or at Grand Central Terminal, whichever is faster for the driver."

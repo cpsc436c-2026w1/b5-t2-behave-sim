@@ -202,12 +202,12 @@ Step 13:
 
 ```
 $ uv run pytest -q
-...............................                                          [100%]
+.....................................                                    [100%]
 37 passed in 2.01s
 ```
 
 ## What stays a draft
 
-The rules R010, R020, R030, R040, R050, R070, R090, R100, R120 and RF040 have examples and no step code; SIM04 and SIM05
-are described and not generated; no script in `scripts/` exists. That is the state the text is in on Tuesday for
+The rules R010, R020, R030, R040, R050, R070, R090, R100, R120 and RF040 have examples and do not have step code; SIM04 and SIM05
+are described and not generated; the scripts in `scripts/` do not exist yet. That is the state the text is in on Tuesday for
 every rule.
