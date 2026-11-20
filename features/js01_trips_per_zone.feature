@@ -95,3 +95,16 @@ Feature: Trips requested in each zone
       Then zone 48 shows no data between 09:25 and 09:30
       And zone 48 shows no data between 09:30 and 09:35
       And every zone and period shows the count computed from the data set's record of events
+
+  @RF040 @live
+  Rule: The count by zone over 30 days stays fast while the stream adds a small file to raw/ every minute
+    The count is trips requested in each pickup zone from 2026-10-24 to 2026-11-22, read from the compacted files.
+
+    Example: Thirty days of small files, compacted
+      Given the simulated data set SIM05 "raw-30-days"
+      And the data set is copied to raw/trip-events/ in the bucket
+      And job t00-compact-events has run for each of the 30 days
+      When the count by zone over 30 days runs 5 times in Athena while one small file a minute is added to raw/trip-events/
+      Then table trip_events_compacted has 30 files, one for each day
+      And every run counts 142310, 188010 and 194309 trips requested for zones 48, 161 and 230
+      And the median run time is under 5 s

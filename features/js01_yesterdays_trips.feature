@@ -28,16 +28,3 @@ Feature: Yesterday's completed trips in one table
       And table trips_rejected has trip t-0402 with reason "no fare"
       And table trips_rejected has trip t-0403 with reason "fare not above 0"
       And table trips_rejected has trip t-0404 with reason "fare not above 0"
-
-  @RF040 @live
-  Rule: The count by zone over 30 days stays fast while the stream adds a small file to raw/ every minute
-    The count is trips requested in each pickup zone from 2026-10-24 to 2026-11-22, read from the compacted files.
-
-    Example: Thirty days of small files, compacted
-      Given the simulated data set SIM05 "raw-30-days"
-      And the data set is copied to raw/trip-events/ in the bucket
-      And job t00-compact-events has run for each of the 30 days
-      When the count by zone over 30 days runs 5 times in Athena while one small file a minute is added to raw/trip-events/
-      Then table trip_events_compacted has 30 files, one for each day
-      And every run counts 142310, 188010 and 194309 trips requested for zones 48, 161 and 230
-      And the median run time is under 5 s
