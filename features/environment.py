@@ -1,4 +1,4 @@
-"""Setup that behave runs around the examples. Checkpoint 2 material: on Monday features/steps/ is empty."""
+"""Setup that behave runs around the examples. Checkpoint 2 material: a team's features/steps/ is empty at Checkpoint 1."""
 import sys
 from pathlib import Path
 

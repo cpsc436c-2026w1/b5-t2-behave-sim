@@ -1,23 +1,23 @@
 # Studio demo: the rides example, file by file
 
-About one minute a step. Steps 1 to 8 are Checkpoint 1: **text that a team writes by Monday**, and the two checks
+About one minute a step. Steps 1 to 8 are Checkpoint 1: **text that a team writes by Tuesday**, and the two checks
 of that text. Steps 9 to 13 show **where Checkpoint 2 goes**: the same text made to run. Nothing calls AWS.
 All output below is pasted from runs in this repository on 2026-11-19, steps 8, 10, 11 and 13 again on 2026-11-20.
 
 Before the studio: `uv` installed; `uv sync` once in this folder.
 
-## Checkpoint 1: what a team writes for Monday
+## Checkpoint 1: what a team writes for Tuesday
 
 | # | Show | Say |
 |---|---|---|
-| 1 | `README.md`, the table | the upper rows are Monday's hand-in, the lower rows are Checkpoint 2 |
-| 2 | `docs/requirements.md`, JS01 | a story is a heading; under it lines R010 … in five forms: WHEN (R010), IF … THEN (R020), no keyword (R030), WHILE (R090 under JS03), WHERE with WHEN (R110 under JS04). A code is used once in the file; a number after `|` is the requirement's target; `[Scenario]` at the end of a line links the feature file that has its rule |
-| 3 | `docs/requirements.md`, Stakeholder input | the feedback codes with their wording, then `Reply [R080]:` and how the team addresses it, with the R lines that meet it in brackets (`Reply:` when no R line meets it); the line ends with `[Scenario]` and the feature file (RF010 to RF040) or with `Read:` and what staff will read (RF050); RQ010 and RQ020 each have a `Reply:` that says what the team will do and what it is based on (`We will calculate … based on …`, `We will write the test …`); then the Evals entry for R110: cases, what counts as correct, runs, the count that passes, the model in use |
+| 1 | `README.md`, the table | the upper rows are Tuesday's hand-in, the lower rows are Checkpoint 2 |
+| 2 | `docs/requirements.md`, JS01 | a story is a heading; under it lines R010 … in five forms: WHEN (R010), IF … THEN (R020), no keyword (R030), WHILE (R090 under JS03), WHERE with WHEN (R110 under JS04). An ID is defined once in the file; a number after `|` is the requirement's target; `[Scenario]` at the end of a line links the feature file that has its rule |
+| 3 | `docs/requirements.md`, Stakeholder input | the feedback IDs with their wording, then `Reply [R080]:` and how the team addresses it, with the R lines that meet it in brackets (`Reply:` when no R line meets it); the line ends with `[Scenario]` and the feature file (RF010 to RF040) or with `Read:` and what staff will read (RF050); RQ010 and RQ020 each have a `Reply:` that says what the team will do and what it is based on (`We will calculate … based on …`, `We will write the test …`); then the Evals entry for R110: cases, what counts as correct, runs, the count that passes, the model in use |
 | 4 | `docs/design.md`, Data, Our data | four sentences: DS01 and DS02, the subset with its rows and size, and what the events are built from. Run the count below |
 | 5 | `docs/design.md`, Data, Simulated data for the demos | SIM01 to SIM05, one bullet each in words: the IDs it shows in brackets after its name, then what it holds and its injected faults with exact counts |
 | 6 | `docs/design.md`, Data, Event format | one line for each kind of event; the fields are the columns of an example's table. Field types and valid values come at Checkpoint 2 |
-| 7 | `features/js01_trips_per_zone.feature`, rule `@RF010` | story tag on the feature, code tag on the rule; one example with a 3-row table, one with `Given the simulated data set SIM01 "rush-hour"`. Then `trip_assignment.feature`: two story tags, a rule with two code tags (`@R080 @RF030`). Then the `@eval` gate in `js04_pickup_place.feature` |
-| 8 | the two checks below | the traceability table, then the dry run on the Monday state |
+| 7 | `features/js01_trips_per_zone.feature`, rule `@RF010` | story tag on the feature, ID tag on the rule; one example with a 3-row table, one with `Given the simulated data set SIM01 "rush-hour"`. Then `trip_assignment.feature`: two story tags, a rule with two ID tags (`@R080 @RF030`). Then the `@eval` gate in `js04_pickup_place.feature` |
+| 8 | the two checks below | the traceability table, then the dry run on the Tuesday state |
 
 Step 4, one number of Our data checked (reads the file's footer over HTTPS):
 
@@ -88,8 +88,8 @@ features/js04_pickup_place.feature:3
 $ git checkout -q main
 ```
 
-"error" and "undefined" are what Monday looks like: every feature was read, and no step has code yet. The 3
-examples of the pickup-place feature are "untested" because the demonstration gives their steps code. The count of
+"error" and "undefined" are what a team's Tuesday looks like: every feature was read, and its steps do not have code yet. In this example the steps of the pickup-place feature do have code (`features/steps/pickup_steps.py`, a demonstration), so its 3
+examples are "untested". The count of
 scenarios (17 error and 3 untested, 20) equals the number of `Example:` lines.
 
 ## Checkpoint 2: the same text, running
@@ -208,5 +208,5 @@ $ uv run pytest -q
 ## What stays a draft
 
 The rules R010, R020, R030, R040, R050, R070, R090, R100 and RF040 have examples and no step code; SIM04 and SIM05
-are described and not generated; no script in `scripts/` exists. That is the state the text is in on Monday for
+are described and not generated; no script in `scripts/` exists. That is the state the text is in on Tuesday for
 every rule.
