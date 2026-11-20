@@ -27,30 +27,30 @@ def accept_together(trips: Trips, accepts: list[tuple[str, str]]) -> dict:
     return answers
 
 
-@given("trip {trip_id} is requested")
-def step_requested(context, trip_id):
-    context.trips = Trips()
-    context.trips.request(trip_id)
-    context.answers = {}
+def trips_of(context) -> Trips:
+    """The trips table of the example: every trip of the requests received so far is requested and not assigned."""
+    if context.trips is None:
+        context.trips = Trips()
+        for d in context.deliveries:
+            if d["event_type"] == "trip_requested":
+                context.trips.request(d["trip_id"])
+    return context.trips
 
 
-@given("driver {driver_id} accepts trip {trip_id}")
-@when("driver {driver_id} accepts trip {trip_id}")
-def step_accept(context, driver_id, trip_id):
-    context.answers[(trip_id, driver_id)] = context.trips.accept(trip_id, driver_id)
-
-
-@when("the accept of driver {driver_id} for trip {trip_id} is received at {received}")
-def step_accept_at(context, driver_id, trip_id, received):
+@given("this accept is received:")
+@when("this accept is received:")
+def step_accept_row(context):
+    """One accept, one request to our API; the time taken is measured around it."""
+    (row,) = list(context.table)
     started = time.monotonic()
-    context.answers[(trip_id, driver_id)] = context.trips.accept(trip_id, driver_id)
-    context.received, context.took_s = received, time.monotonic() - started
+    context.answers[(row["trip_id"], row["driver_id"])] = trips_of(context).accept(row["trip_id"], row["driver_id"])
+    context.received, context.took_s = row["received_time"], time.monotonic() - started
 
 
 @when("these accepts are sent together, each before the other has an answer:")
 def step_accept_table(context):
     accepts = [(row["trip_id"], row["driver_id"]) for row in context.table]
-    context.answers.update(accept_together(context.trips, accepts))
+    context.answers.update(accept_together(trips_of(context), accepts))
 
 
 @when("the two accepts of every trip are sent together, each before the other has an answer")
@@ -63,12 +63,6 @@ def step_accept_data_set(context):
             context.pairs.setdefault(d["trip_id"], []).append(d["driver_id"])
     for trip_id, drivers in context.pairs.items():
         context.answers.update(accept_together(context.trips, [(trip_id, driver) for driver in drivers]))
-
-
-@then("driver {driver_id} is refused")
-def step_refused(context, driver_id):
-    answers = [a for (_, driver), a in context.answers.items() if driver == driver_id]
-    assert answers == [REFUSED], f"driver {driver_id}: expected refused, the system answered {answers}"
 
 
 @then("by {deadline} driver {driver_id} has the answer that the accept is refused")

@@ -19,3 +19,4 @@ def before_all(context):
 
 def before_scenario(context, scenario):
     context.deliveries = []                 # every example starts without data: "only these trip requests"
+    context.trips, context.answers = None, {}  # and without trips or answers
