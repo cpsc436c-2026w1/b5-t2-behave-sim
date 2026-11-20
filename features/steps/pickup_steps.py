@@ -59,7 +59,7 @@ def step_place(context, place):
     assert context.pickup_place == place, f'expected pickup place "{place}", the system shows {context.pickup_place!r}'
 
 
-@then("the pickup place is null")
+@then("the system says that the message names no pickup place")
 def step_null(context):
     assert context.pickup_place is None, f"expected null, the system shows {context.pickup_place!r}"
 

@@ -29,13 +29,13 @@ When I have requested a trip, I want to see which driver is coming, so that I kn
 - **R090** WHILE a trip is assigned and not completed THE SYSTEM SHALL show the rider the trip's driver [Scenario](../features/trip_assignment.feature)
 - **R100** WHEN a trip is completed THE SYSTEM SHALL show the rider the fare | data latency under 5 s at p95, from the completion (SLO) [Scenario](../features/trip_assignment.feature)
 
-## JS04 Support agent: pickup place of a rider's message
+## JS04 Support agent: pickup place of a rider's message (added after the proposal)
 
 When a rider writes to support about a trip (free text, about 200 messages a day, Q040), I want to see the pickup
 place that the message names, or that it does not name one, so that I can find the trip without guessing where the
 rider was waiting.
 
-- **R110** WHERE the system includes the assistant, WHEN a support agent opens a rider's message THE SYSTEM SHALL show the pickup place that the message names, as a name from our list of places, or `null` if the message does not name a pickup place | eval `pickup-place`: at least 10 cases, each run 3 times, and the pickup place is correct in at least 80% of the runs (24 of 30 runs for 10 cases) [Scenario](../features/js04_pickup_place.feature)
+- **R110** WHERE the system includes the assistant, WHEN a support agent opens a rider's message THE SYSTEM SHALL show the pickup place that the message names, as a name from our list of places, or say that the message names no pickup place | eval `pickup-place`: at least 10 cases, each run 3 times, and the pickup place is correct in at least 80% of the runs (24 of 30 runs for 10 cases) [Scenario](../features/js04_pickup_place.feature)
 
 ## Stakeholder input
 

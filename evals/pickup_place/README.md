@@ -1,5 +1,7 @@
 # Eval pickup-place (R110)
 
+> **Only a demonstration.** The step code here (`features/steps/pickup_steps.py`) shows how an LLM eval runs in behave. You do not write step code for Checkpoint 1: there, the eval is the `## Evals` entry and the `@eval` example, checked with `behave --dry-run`.
+
 The eval of requirement R110 in `docs/requirements.md` (section Evals): does the assistant find the pickup place in
 a rider's message, or `null` when the message does not name one?
 
