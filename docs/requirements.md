@@ -54,7 +54,7 @@ From the proposal feedback issue, with its IDs and wording.
   - Cases: 10 rider messages written by the team, each with its reference value: 7 that name a pickup place, 3 that do not (one of them names only a destination). File `evals/pickup_place/cases.jsonl`; our list of places is `evals/pickup_place/places.txt`.
   - Correct when (checked by code): the reply is a JSON object with one field, `pickup_place`, and its value equals the reference value. A reply with text around the JSON or with another field is not correct.
   - Runs: each case 3 times, 30 runs, because the model's replies vary from run to run.
-  - Passes when: the pickup place is correct in at least 24 of the 30 runs (accuracy 0.8).
+  - Passes when: the pickup place is correct in at least 24 of the 30 runs (accuracy at least 80%).
   - Model in use: Qwen 3.8 27B (`qwen3.8-27b`) through the course LLM gateway.
 
 ## Assumptions

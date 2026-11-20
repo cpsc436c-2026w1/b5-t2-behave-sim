@@ -36,7 +36,7 @@ def ask_model_live(message: str) -> str:
 
 def recorded_reply(message: str, run: int = 1) -> str:
     cases = {c["message"]: c["case"] for c in checker.load_cases()}
-    assert message in cases, "this message is not a case of evals/pickup_place/cases.jsonl, so it has no recorded reply"
+    assert message in cases, "this message is not a case of evals/pickup_place/cases.jsonl, so it does not have a recorded reply"
     return next(r["reply"] for r in checker.load_replies() if r["case"] == cases[message] and r["run"] == run)
 
 

@@ -2,7 +2,7 @@
 
 About one minute a step. Steps 1 to 8 are Checkpoint 1: **text that a team writes by Monday**, and the two checks
 of that text. Steps 9 to 13 show **where Checkpoint 2 goes**: the same text made to run. Nothing calls AWS.
-All output below is pasted from runs in this repository on 2026-11-19.
+All output below is pasted from runs in this repository on 2026-11-19, steps 8, 10, 11 and 13 again on 2026-11-20.
 
 Before the studio: `uv` installed; `uv sync` once in this folder.
 
@@ -143,8 +143,8 @@ Feature: Trips requested in each zone # features/js01_trips_per_zone.feature:2
 
 1 feature passed, 0 failed, 3 skipped
 1 rule passed, 0 failed, 12 skipped
-2 scenarios passed, 0 failed, 17 skipped
-6 steps passed, 0 failed, 66 skipped
+2 scenarios passed, 0 failed, 18 skipped
+6 steps passed, 0 failed, 70 skipped
 Took 0min 0.000s
 ```
 
@@ -171,8 +171,8 @@ Failing scenarios:
 
 0 features passed, 1 failed, 3 skipped
 0 rules passed, 1 failed, 12 skipped
-0 scenarios passed, 2 failed, 17 skipped
-4 steps passed, 2 failed, 66 skipped
+0 scenarios passed, 2 failed, 18 skipped
+4 steps passed, 2 failed, 70 skipped
 Took 0min 0.000s
 ```
 
@@ -182,14 +182,14 @@ Step 11 (last lines of each):
 $ uv run behave --tags=@RF020
 1 feature passed, 0 failed, 3 skipped
 1 rule passed, 0 failed, 12 skipped
-2 scenarios passed, 0 failed, 17 skipped
-10 steps passed, 0 failed, 62 skipped
+2 scenarios passed, 0 failed, 18 skipped
+10 steps passed, 0 failed, 66 skipped
 Took 0min 0.000s
 $ uv run behave --tags=@RF030
 1 feature passed, 0 failed, 3 skipped
 1 rule passed, 0 failed, 12 skipped
-2 scenarios passed, 0 failed, 17 skipped
-8 steps passed, 0 failed, 64 skipped
+2 scenarios passed, 0 failed, 18 skipped
+8 steps passed, 0 failed, 68 skipped
 Took 0min 0.000s
 ```
 

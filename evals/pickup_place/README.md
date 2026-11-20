@@ -18,7 +18,7 @@ spends money and waits for the instructor's go.
 
 Output below is pasted from runs on 2026-11-20, branch `eval-prototype`.
 
-## The checker alone
+## Checker alone
 
 ```
 $ python3 evals/pickup_place/check.py
@@ -37,7 +37,7 @@ case  reference                 correct  wrong runs
 pickup place correct in 26 of 30 runs (accuracy 0.87)
 ```
 
-## The feature, on the recorded replies
+## Feature on the recorded replies
 
 ```
 $ uvx behave@1.3.3 features/js04_pickup_place.feature
@@ -70,7 +70,7 @@ Feature: Pickup place of a rider's message # features/js04_pickup_place.feature:
 Took 0min 0.000s
 ```
 
-## The gate fails below 24 of 30
+## Gate fails below 24 of 30
 
 Case 6's three replies changed to `{"pickup_place": "LGA Terminal B"}` (a name that is not on the list), then put
 back:
@@ -107,8 +107,20 @@ The threshold in the feature changed to 27, then put back:
 $ uvx behave@1.3.3 features/js04_pickup_place.feature        # from the gate on
       Then the pickup place is correct in at least 27 of the 30 runs # features/steps/pickup_steps.py:86
       ASSERT FAILED: correct in 26 of 30 runs, at least 27 needed
-      ...the per-case table, as above...
+      case  reference                 correct  wrong runs
+         1  "JFK Terminal 4"          3 of 3   
+         2  "Penn Station"            3 of 3   
+         3  "Grand Central Terminal"  2 of 3   run 1: not JSON
+         4  "Times Square"            2 of 3   run 2: pickup_place is "LaGuardia Terminal B"
+         5  "Barclays Center"         3 of 3   
+         6  "LaGuardia Terminal B"    3 of 3   
+         7  "Yankee Stadium"          3 of 3   
+         8  null                      2 of 3   run 2: pickup_place is "Penn Station"
+         9  null                      2 of 3   run 3: not exactly one field pickup_place
+        10  null                      3 of 3   
       pickup place correct in 26 of 30 runs (accuracy 0.87)
+
+
 
 Failing scenarios:
   features/js04_pickup_place.feature:21  Eval of pickup places
@@ -129,7 +141,7 @@ $ REPLIES=live uvx behave@1.3.3 features/js04_pickup_place.feature
 ## Checks of the whole repository
 
 ```
-$ uvx behave@1.3.3 --dry-run --no-snippets              # last lines; the 30 undefined steps are the draft rules
+$ uvx behave@1.3.3 --dry-run --no-snippets              # last lines: the error and the 30 undefined steps are draft rules (as on main)
 0 features passed, 0 failed, 0 skipped, 4 untested
 0 rules passed, 0 failed, 1 error, 0 skipped, 12 untested
 0 scenarios passed, 0 failed, 1 error, 0 skipped, 19 untested
