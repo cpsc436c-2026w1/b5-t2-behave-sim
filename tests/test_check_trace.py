@@ -50,7 +50,7 @@ PLANTED = [
      "### Pickup place of a message [R110, R120]", "### Pickup place of a message [R110, R120, R999]", "R999 is not defined in docs/requirements.md"),
     ("rule 3: a SIM bullet names an undefined ID in brackets", DESIGN,
      "- **SIM04 Trips day** [R040]", "- **SIM04 Trips day** [R045]", "R045 is not defined in docs/requirements.md"),
-    ("rule 3: a code in the design that is not defined", DESIGN, "| R070, R080, RF030 |", "| R070, R085, RF030 |",
+    ("rule 3: a code in the design that is not defined", DESIGN, "| R070, R080, RF030, RF050 |", "| R070, R085, RF030, RF050 |",
      "R085 is not defined"),
     ("rule 4: a code on two Rules", COUNTS, "  @R020\n", "  @R020 @R010\n", "@R010 is already the tag of the Rule"),
     ("rule 5: a data set defined twice", DESIGN, "- **SIM02 Quiet zone**", "- **SIM01 Quiet zone**", "SIM01 is defined twice"),

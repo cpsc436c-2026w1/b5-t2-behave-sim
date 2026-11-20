@@ -43,7 +43,8 @@ Firehose writes the stream to the bucket about once a minute, and at 00:30 UTC t
 before as one Parquet file. The curation job loads the nightly export's completed trips with a fare above 0 within
 30 minutes of the file's arrival (p95) and sets the other rows aside.
 
-Components: `t00-trip-events-to-lake`, `t00-lake-<account-id>`, `t00_lake`, `t00-compact-events`, `t00-curate-trips`
+Components: `t00-trip-events-to-lake`, `t00-lake-<account-id>`, `t00_lake`, `t00-compact-events`,
+`trip_events_compacted`, `t00-curate-trips`, `trips_curated`, `trips_rejected`
 
 ### Pickup place of a message [R110, R120]
 
@@ -57,32 +58,37 @@ Components: `t00-api`, `t00-assistant`
 
 ## Resources
 
-Every resource is in ca-central-1, has a name that starts with `t00-` (the Glue database uses `t00_lake`), and
-carries the tags `Project=436c`, `Team=t00`, `Owner=<name>` (RF050). The scripts are written at Checkpoint 2.
+Every resource is in ca-central-1, has a name that starts with `t00-` (the Glue database is `t00_lake`, and its tables
+are named without the prefix), and carries the tags `Project=436c`, `Team=t00`, `Owner=<name>` (RF050). The scripts are
+written at Checkpoint 2.
 
 | Resource | Name | Created by | IDs |
 |---|---|---|---|
-| Kinesis data stream | `t00-trip-events` | `scripts/stream.py up` | R010, R020, RF010 |
-| Lambda function | `t00-count-requests` | `scripts/counting.py up` | R010, R020, RF010, RF020 |
-| DynamoDB tables | `t00-zone-counts`, `t00-seen-events` | `scripts/counting.py up` | R010, R030, RF010, RF020 |
-| Lambda function | `t00-track-trips` | `scripts/assignment.py up` | R070, R090, R100 |
-| Lambda function | `t00-assign-trip` | `scripts/assignment.py up` | R070, R080, RF030 |
-| DynamoDB table | `t00-trips` | `scripts/assignment.py up` | R070, R080, R090, R100, RF030 |
-| API Gateway HTTP API | `t00-api` | `scripts/api.py up` | R030, R070, R080, R090, R100, R110, R120 |
-| Lambda function | `t00-read` | `scripts/api.py up` | R030, R090, R100, RF020 |
-| Firehose stream | `t00-trip-events-to-lake` | `scripts/lake.py up` | RF040 |
-| S3 bucket | `t00-lake-<account-id>` | `scripts/lake.py up` | R040, R050, RF040 |
-| Glue database and tables | `t00_lake` | `scripts/lake.py up` | R040, R050, RF040 |
-| Glue job | `t00-curate-trips` | `scripts/curate.py up` | R040, R050 |
-| Glue job, run every night at 00:30 UTC | `t00-compact-events` | `scripts/compact.py up` | RF040 |
-| Lambda function (the assistant) | `t00-assistant` | `scripts/assistant.py up` | R110, R120 |
+| Kinesis data stream | `t00-trip-events` | `scripts/stream.py up` | R010, R020, RF010, RF050 |
+| Lambda function | `t00-count-requests` | `scripts/counting.py up` | R010, R020, RF010, RF020, RF050 |
+| DynamoDB table | `t00-zone-counts` | `scripts/counting.py up` | R010, R020, R030, RF020, RF050 |
+| DynamoDB table | `t00-seen-events` | `scripts/counting.py up` | RF010, RF050 |
+| Lambda function | `t00-track-trips` | `scripts/assignment.py up` | R070, R090, R100, RF050 |
+| Lambda function | `t00-assign-trip` | `scripts/assignment.py up` | R070, R080, RF030, RF050 |
+| DynamoDB table | `t00-trips` | `scripts/assignment.py up` | R070, R080, R090, R100, RF030, RF050 |
+| API Gateway HTTP API | `t00-api` | `scripts/api.py up` | R030, R070, R080, R090, R100, R110, R120, RF050 |
+| Lambda function | `t00-read` | `scripts/api.py up` | R030, R090, R100, RF020, RF050 |
+| Firehose stream | `t00-trip-events-to-lake` | `scripts/lake.py up` | RF040, RF050 |
+| S3 bucket | `t00-lake-<account-id>` | `scripts/lake.py up` | R040, R050, RF040, RF050 |
+| Glue database | `t00_lake` | `scripts/lake.py up` | R040, R050, RF040, RF050 |
+| Glue table, in `t00_lake` | `trips_curated` | `scripts/curate.py up` | R040, R050, RF050 |
+| Glue table, in `t00_lake` | `trips_rejected` | `scripts/curate.py up` | R050, RF050 |
+| Glue job | `t00-curate-trips` | `scripts/curate.py up` | R040, R050, RF050 |
+| Glue table, in `t00_lake` | `trip_events_compacted` | `scripts/compact.py up` | RF040, RF050 |
+| Glue job, run every night at 00:30 UTC | `t00-compact-events` | `scripts/compact.py up` | RF040, RF050 |
+| Lambda function (the assistant) | `t00-assistant` | `scripts/assistant.py up` | R110, R120, RF050 |
 
 Outside our system. We do not create these; our system relies on what the last column says.
 
 | Who | Sends | To | What we rely on |
 |---|---|---|---|
 | the app's trips service | each trip event | stream `t00-trip-events` | one JSON object with the event fields of Data; an event may arrive twice or late; an event is not sent again more than 24 hours after it was first sent (Q030) |
-| the app's trips service | each accept, as one request | API `t00-api` | the body holds `event_id`, `driver_id` and `event_time`; the app passes our answer to the driver's phone |
+| the app's trips service | each accept, as one request | API `t00-api` | the body holds `event_id`, `trip_id`, `driver_id` and `event_time`; the app passes our answer to the driver's phone |
 | the app's nightly export | one CSV file with the day's completed trips | `raw/trip-exports/dt=<day>/` in our bucket | the columns are the fields of `trip_completed`; the file arrives by 05:30 UTC |
 | the rider's page, the analyst's browser and the support agent's page | reads and rider messages | API `t00-api` | none |
 | the course LLM gateway | the model's reply to each message | function `t00-assistant` | for each key at most 2 CAD and 120 requests a minute |
