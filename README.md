@@ -51,9 +51,11 @@ in-section step needs only the in-section steps before it.
    about 20 rows) in it.
 5. Read [`docs/simulation-standards.md`](docs/simulation-standards.md): Part B checks the rides example's SIM01
    against it, and B5 asks your assistant to follow it.
-6. Skim the README of the shape folder nearest your project, in [`shapes/`](shapes/README.md): `lakehouse` (a batch
-   of files for each day), `operational` (a stream of events with arrival times) or `genai` (questions with their
-   answers known). B4 runs that shape.
+6. Pick the shape nearest your project: `lakehouse` (a batch of files for each day), `operational` (a stream of
+   events with arrival times) or `genai` (questions with their answers known). Skim that shape's own README:
+   [`shapes/lakehouse/README.md`](shapes/lakehouse/README.md),
+   [`shapes/operational/README.md`](shapes/operational/README.md) or
+   [`shapes/genai/README.md`](shapes/genai/README.md). B4 runs that shape.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
@@ -245,7 +247,8 @@ pass.
 What you should see, check by check:
 
 1. `git status --short` lists only files in `features/steps/` and, if the assistant changed it,
-   `features/environment.py` (that file is already in this repository).
+   `features/environment.py` (that file is already in this repository). If it lists a file in `src/` or a
+   `.feature` file, read and undo the change as check 1 of `prompts/steps.md` says, then go on with check 2.
 2. The dry run's last lines have `untested` and no `undefined`.
 3. Both R010 scenarios pass, none fail.
 4. With the boundary bug in, `A request at the end of a period is in the next period` is under
