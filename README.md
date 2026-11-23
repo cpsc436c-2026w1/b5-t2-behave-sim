@@ -539,10 +539,11 @@ This data set has all four fault kinds of the standards. For the other shapes, r
 
 **First, a worked example, in this repository.** It takes the lakehouse shape of B4 (weather stations, one batch
 file a night) from one requirement to the expected result of its scenario. Run
-`uv run python shapes/lakehouse/generate.py` first, unless you ran it in B4.
+`uv run python shapes/lakehouse/generate.py` first, unless you ran the lakehouse shape in B4.
 
-1. **Requirement**, written as in Checkpoint 1, with that team's own ID: **RF010** Every reading must be stored exactly once, even when a
-   later batch file sends it again.
+1. **Requirement**, written as in Checkpoint 1 (the IDs are the weather team's, not the rides example's):
+   **R030** WHEN a batch file sends a reading that an earlier batch file already sent THE SYSTEM SHALL store the
+   reading once.
 2. **Sample**: `shapes/lakehouse/sample/ghcn_daily_sample.csv`. One row is one weather station's reading of one
    element (TMAX, TMIN or PRCP) for one day.
 3. **Fault** that the requirement is about: `twice`, 3 of them (a reading sent again in the next batch file; the
@@ -579,12 +580,12 @@ file a night) from one requirement to the expected result of its scenario. Run
    | Line | Filled in |
    |---|---|
    | `Our sample:` | `shapes/lakehouse/sample/ghcn_daily_sample.csv`. It is one weather station's reading of one element (TMAX, TMIN or PRCP) for one day. |
-   | `SIM01 shows:` | RF010: a reading that a later batch file sends again is stored once. |
+   | `SIM01 shows:` | R030: a reading that a later batch file sends again is stored once. |
    | `Its shape:` | a batch of files for each day (lakehouse) |
    | `Faults:` | 3 twice |
 
 For your project, do the same with one of your Checkpoint 1 requirements. If your data set has more than one event
-type, add `AND t.event_type = '<your type>'` to the `WHERE` line of the query of item 4.
+type, add `AND t.event_type = '<your type>'` at the end of the `WHERE` line of the query of item 4.
 
 **Then SIM01 for your project, in your team repo.** The rest of B5 runs in your team repo, next to this one. Move your terminal
 there (`cd ../<your team repo>`) and start your assistant at its root. C4 runs back in this repository.
@@ -631,22 +632,22 @@ there (`cd ../<your team repo>`) and start your assistant at its root. C4 runs b
 What you should see: `OK: SIM01 follows the simulation standards (0 problems)` and a digest. Run
 `uv run python sim/generate.py` and `uv run python sim/check.py SIM01` a second time: the two digests should be the
 same. Then compare SIM01's bullet in your `docs/design.md` with the check's output: its event and delivery totals
-with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`). They
-should be equal.
+with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`; a kind
+that the bullet does not name counts as 0, and its fault line says `none`). They should be equal.
 
 The new files belong to your team repo. Commit them there, from its root. The first line keeps Python's cache
-folders out of the commit (on Windows, add the lines `__pycache__/` and `.venv/` to `.gitignore` in your editor
-instead):
+folders and the generated data out of the commit: `sim/generate.py` writes the data again, the same each time (on
+Windows, add the lines `__pycache__/`, `.venv/` and `sim/data/` to `.gitignore` in your editor instead):
 
 ```bash
-printf '__pycache__/\n.venv/\n' >> .gitignore
+printf '\n__pycache__/\n.venv/\nsim/data/\n' >> .gitignore
 git status --short
 git add -A
 git commit -m "SIM01 generator and check"
 ```
 
 `git status --short` lists `.gitignore`, the three files you copied, `pyproject.toml` and `uv.lock` if they are
-new, and the assistant's files in `src/`, `sim/` and `docs/`. If your team works on branches with pull requests, run
+new, and the assistant's files in `src/`, `sim/` (not `sim/data/`) and `docs/`. If your team works on branches with pull requests, run
 `git switch -c sim01` before `git add`, then push the branch and open a pull request.
 
 If the check stops with `FAILED: expected one src/<package>/events.py, found 2` (or a larger number), your team repo
@@ -698,12 +699,13 @@ you see, not from the code that changed:
    uv run behave --no-snippets --no-capture --name "<its name>"
    ```
 
-   behave then shows what the step prints. Which period holds the request: the one of its
-   `event_time`, or the one of its `received_time`?
+   behave then shows what the step prints: a line that starts with `{`, right below the `Then` line of the example
+   and above its `ASSERT FAILED` line. Which period holds the request: the one of its `event_time`, or the one of
+   its `received_time`?
 4. In `src/rides/counting.py`, read `count_requests` and find the line that decides which period a request is
    counted in.
-5. **Predict**, in your notes, after the query and before you run the scenario: does your C2 scenario on SIM01
-   pass or fail with this bug? Decide from the times of SIM01's late requests, in the truth:
+5. Run the query below, then **predict**, in your notes, before you run the scenario: does your C2 scenario on
+   SIM01 pass or fail with this bug? Decide from the times of SIM01's late requests, in the truth:
 
    ```bash
    uv run python sim/query.py SIM01 "
