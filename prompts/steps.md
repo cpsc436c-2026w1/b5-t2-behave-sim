@@ -32,7 +32,7 @@ Your assistant's reply says the scenarios pass. Check that yourself, in the term
    ```
 
    You should see `A request at the end of a period is in the next period` under `Failing scenarios`. If everything
-   still passes, the steps do not test our code: ask your assistant why.
+   still passes, the steps do not catch the boundary bug: ask your assistant why.
 4. **Only step code changed.** `git status`. You should see only files in `features/steps/` (and
    `features/environment.py`, if it made one). A changed `.feature` file or a file in `src/` means the assistant
    changed the test or the system to make it pass: undo that with `git checkout HEAD -- <file>`.
