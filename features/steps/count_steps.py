@@ -77,8 +77,8 @@ def step_stored(context, zone, expected, start, end):
 
 @then("zones {zones} show {totals} trips requested between {start} and {end}")
 def step_totals(context, zones, totals, start, end):
-    """zones 48, 161 and 230 show 304, 191 and 342 trips requested between 09:00 and 10:00: the sum of the zone's
-    counts over the periods that start in that time."""
+    """zones 48, 161 and 230 show <n48>, <n161> and <n230> trips requested between 09:00 and 10:00: for each zone,
+    the sum of its counts over the periods that start in that time."""
     zone_list = [int(z) for z in zones.replace(" and ", ", ").split(", ")]
     total_list = [int(n) for n in totals.replace(" and ", ", ").split(", ")]
     assert len(zone_list) == len(total_list), f"{len(zone_list)} zones and {len(total_list)} totals"
