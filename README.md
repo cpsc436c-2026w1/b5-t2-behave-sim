@@ -54,8 +54,8 @@ Every command below runs in the root of this repository, unless a step says your
 
 ### Part A: step code for one rule
 
-**Goal.** One example of rule RF010 ("every trip request is counted exactly once, even when the stream delivers its
-event twice") runs against the local code in `src/rides/counting.py`. behave runs an example by matching each line
+**Goal.** One example of rule RF010 ("the system shall count every trip request exactly once, even when the stream
+delivers its event twice") runs against the local code in `src/rides/counting.py`. behave runs an example by matching each line
 to a step function, in Python, in `features/steps/`. Three of those functions are missing from this repository:
 you write them.
 
@@ -183,9 +183,9 @@ What you should see: the example passed, with no failed and no undefined step. O
 #### A4. New rule R010, with your assistant
 
 A1 to A3 made the example of rule RF010 run. R010 is a different rule of the same feature: when a 5-minute period
-ends, the system stores one count of requested trips for each pickup zone that had a request in the period
+ends, the system shall store one count of requested trips for each pickup zone that had a request in the period
 (`docs/requirements.md`). Its two examples reuse your A2 steps and need two more, which your assistant writes:
-"A request at the end of a period is in the next period" uses only steps you already have (it may pass before you
+"A request exactly at the end of a period (09:05:00)" uses only steps you already have (it may pass before you
 ask); "Three requests in one period" also needs `When the period between … and … ends` and
 `Then within … s zone … has … trips requested between … and …`.
 
@@ -222,7 +222,7 @@ What you should see, check by check:
    `.feature` file, read and undo the change as check 1 of `prompts/steps.md` says, then go on with check 2.
 2. The dry run's last lines have `untested` and no `undefined`.
 3. Both R010 scenarios pass, none fail.
-4. With the boundary bug in, `A request at the end of a period is in the next period` is under
+4. With the boundary bug in, `A request exactly at the end of a period (09:05:00)` is under
    `Failing scenarios`; after `git restore`, `git status --short` lists no file in `src/`.
 
 Then read each `Then` step it wrote, as the end of `prompts/steps.md` says: the expected number comes from the line
@@ -405,7 +405,7 @@ Feature: Trips requested in each zone, on our simulated hour
   B5T2 Part C: one scenario that reads the generated folder sim/data/SIM01/. Each Then value was taken from
   sim/data/SIM01/_truth/ with sim/query.py before the run.
 
-  Scenario: Every request of SIM01 counted once
+  Scenario: The deliveries of SIM01
     Given the deliveries of SIM01
     When the counts are read at 2026-11-23T10:11:00Z
     Then zones 48, 161 and 230 show <n48>, <n161> and <n230> trips requested between 09:00 and 10:00
@@ -574,7 +574,7 @@ file a night) from one requirement to the expected result of its scenario. Run
    `readings` in place of `<n>`:
 
    ```gherkin
-   Scenario: Every reading of SIM01 stored once
+   Scenario: The batch files of SIM01
      Given the deliveries of SIM01
      When every batch file of SIM01 is loaded
      Then station <station> has <n> readings stored
@@ -587,7 +587,7 @@ file a night) from one requirement to the expected result of its scenario. Run
    | Line | Filled in |
    |---|---|
    | `Our sample:` | `shapes/lakehouse/sample/ghcn_daily_sample.csv`. It is one weather station's reading of one element (TMAX, TMIN or PRCP) for one day. |
-   | `SIM01 shows:` | R500: a reading that a later batch file sends again is stored once. |
+   | `SIM01 shows:` | R500: when a batch file sends a reading that an earlier batch file already sent, the system shall store the reading once. |
    | `Its shape:` | a batch of files for each day (lakehouse) |
    | `Faults:` | 3 twice |
 

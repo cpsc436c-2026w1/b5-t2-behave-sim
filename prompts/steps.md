@@ -57,7 +57,7 @@ first: it reads what the assistant changed before any later check restores a fil
    git restore src/rides/counting.py
    ```
 
-   You should see `A request at the end of a period is in the next period` under `Failing scenarios`. If everything
+   You should see `A request exactly at the end of a period (09:05:00)` under `Failing scenarios`. If everything
    still passes, the steps do not catch the boundary bug: ask your assistant why. After the last line,
    `git status --short` lists no file in `src/`.
 
