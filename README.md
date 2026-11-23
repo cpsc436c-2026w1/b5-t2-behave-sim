@@ -23,6 +23,10 @@ added.
 | [`shapes/`](shapes/README.md) | worked examples of Part B for three project shapes: lakehouse, operational, generative AI |
 | `features/`, `src/rides/`, `sim/generate.py` | the rides example: features, local code, the generator of SIM01 to SIM03 |
 
+Each step says where you do it, on the line under its heading: **in the section**, or **at home (Monday and Tuesday
+sections)**. In the Thursday section, your TA says which of the at-home steps you also do in the section. Every
+in-section step needs only the in-section steps before it.
+
 ## Before the tutorial
 
 1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and git.
@@ -45,6 +49,11 @@ added.
 4. For A5 and B5 you need your coding assistant. For A5, connect it to the course server as in B5T1. For B5, also
    have your team repo cloned next to this one, with a small sample of your data (your data set's preview file, or
    about 20 rows) in it.
+5. Read [`docs/simulation-standards.md`](docs/simulation-standards.md): Part B checks the rides example's SIM01
+   against it, and B5 asks your assistant to follow it.
+6. Skim the README of the shape folder nearest your project, in [`shapes/`](shapes/README.md): `lakehouse` (a batch
+   of files for each day), `operational` (a stream of events with arrival times) or `genai` (questions with their
+   answers known). B4 runs that shape.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
@@ -56,6 +65,8 @@ to a step function, in Python, in `features/steps/`. Three of those functions ar
 you write them.
 
 ### A1. Run the example and see its undefined steps
+
+*In the section.*
 
 ```bash
 uv run behave features/js01_trips_per_zone.feature --name "One request delivered twice"
@@ -120,6 +131,8 @@ system act, the `Then` compares what the system shows with a number written in t
 
 ### A2. Write the three steps
 
+*In the section.*
+
 In your editor, open `features/steps/data_steps.py` and replace the comment that starts with `# B5T2 Part A` (all
 of its lines that start with `#`) with the `Given`. Each row of the table becomes one delivery:
 
@@ -157,6 +170,8 @@ The `Given` goes in `data_steps.py`, which imports `given`; pasted into `count_s
 
 ### A3. Run it again
 
+*In the section.*
+
 ```bash
 uv run behave features/js01_trips_per_zone.feature --name "One request delivered twice"
 ```
@@ -172,6 +187,8 @@ What you should see: the example passed, with no failed and no undefined step. O
 
 ### A4. Run the other examples that use the same steps
 
+*At home (Monday and Tuesday sections).* In the Monday and Tuesday sections, go on to A5 now.
+
 The same three steps serve every example of R010, RF010 and RF020 written with a table. The `When` and `Then` you
 wrote also serve the two examples that read a simulated data set; their `Given` (`Given the simulated data set
 SIM01 "rush-hour"` and `… SIM02 "quiet-zone"`) is already in `features/steps/data_steps.py`:
@@ -180,8 +197,9 @@ SIM01 "rush-hour"` and `… SIM02 "quiet-zone"`) is already in `features/steps/d
 uv run behave --no-snippets --tags=@R010,@RF010,@RF020
 ```
 
-What you should see: one example under `Errored scenarios`, no failed scenario, and every other example passed. One
-run's output, for example:
+What you should see depends on whether you have done A5 yet. After A5 (in the Monday and Tuesday sections, A5 comes
+first): no failed and no errored scenario, every example passed. Before A5: one example under `Errored scenarios`,
+no failed scenario, and every other example passed. One run's output before A5, for example:
 
 ```text
 Errored scenarios:
@@ -193,11 +211,13 @@ Errored scenarios:
 21 steps passed, 0 failed, 64 skipped, 3 undefined
 ```
 
-The one error is R010's first example, "Three requests in one period": its `When the period … ends` and
+Before A5, the one error is R010's first example, "Three requests in one period": its `When the period … ends` and
 `Then within 30 s …` have no step code in this repository. Writing them is the same work as A2, which you do with
 your assistant in A5.
 
 ### A5. The rest of R010, with your assistant
+
+*In the section.*
 
 **Where.** This repository, in a terminal at its root, with your coding assistant started there and connected to
 the course server as in
@@ -234,7 +254,9 @@ What you should see, check by check:
 Then read each `Then` step it wrote, as the end of `prompts/steps.md` says: the expected number comes from the line
 of the feature, the actual number from our code.
 
-**If your assistant fails a check or refuses,** keep its attempt on a branch of its own, then take our step code:
+**If your assistant fails a check, refuses, or is still working when your TA moves the section on,** take our step
+code. First stop the assistant: cancel its run (in Claude Code, press Esc) and wait until it shows no running
+command, so that it changes no more files. Then keep its attempt on a branch of its own and take our step code:
 
 ```bash
 git switch -c assistant-try
@@ -261,16 +283,18 @@ git add -A
 git commit -m "R010 steps"
 ```
 
-With these steps in place, A4's command shows no error: R010's first example passes too.
+With these steps in place, A4's command, when you run it, shows no error: R010's first example passes too.
 
 ## Part B: simulate your own incoming batch
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
-event models, and the truth says what happened, so that a `Then` can state its value before the run. Read
-[`docs/simulation-standards.md`](docs/simulation-standards.md) first: these steps check SIM01 of the rides example
-against it, then your own.
+event models, and the truth says what happened, so that a `Then` can state its value before the run. These steps
+check SIM01 of the rides example against [`docs/simulation-standards.md`](docs/simulation-standards.md), which you
+read before the tutorial, then your own.
 
 ### B1. Generate SIM01 and check it
+
+*In the section.*
 
 ```bash
 uv run python -m sim.generate
@@ -314,7 +338,7 @@ OK: SIM01 follows the simulation standards (0 problems)
 digest 69f9adeb63e7a6da
 ```
 
-Every `ok` line is one check of the standards; a broken standard prints `PROBLEM` and the lines that break it. Read
+Every `ok` line is one check of the standards; a check that fails prints `PROBLEM` and the lines that break it. Read
 the `recount` table: why does `trip_requested` have more lines than truth events? Find the answer in the fault
 lines, then check that the `lines` line adds up the same way.
 
@@ -328,6 +352,8 @@ The `twice` line: each of those requests is delivered once more, so `lines` has 
 
 ### B2. Run the generator again: the same files
 
+*In the section.*
+
 ```bash
 uv run python -m sim.generate
 uv run python sim/check.py SIM01
@@ -337,6 +363,9 @@ What you should see: the same output as B1, with the same digest on the last lin
 uses one seeded random generator, so it writes the same files each time.
 
 ### B3. The Parquet step
+
+*At home (Monday and Tuesday sections).* In the Monday and Tuesday sections, B3, B4 and B5 are at home: go on to
+[C1](#c1-the-expected-values-from-the-truth) now.
 
 ```bash
 uv run python sim/check.py SIM01 --parquet
@@ -354,9 +383,11 @@ JSON Lines stay as they are: Parquet is a separate step.
 
 ### B4. One shape near your project
 
-Pick the shape folder nearest your project ([`shapes/`](shapes/README.md)): `lakehouse` (a batch of files for each
-day), `operational` (a stream of events with arrival times) or `genai` (questions with their answers known). Read its
-README and `generate.py`, then run it. For the lakehouse shape:
+*At home (Monday and Tuesday sections).*
+
+Take the shape folder whose README you skimmed before the tutorial ([`shapes/`](shapes/README.md)): `lakehouse` (a
+batch of files for each day), `operational` (a stream of events with arrival times) or `genai` (questions with their
+answers known). Read its `generate.py`, then run it. For the lakehouse shape:
 
 ```bash
 uv run python shapes/lakehouse/generate.py
@@ -391,6 +422,9 @@ This data set has all four fault kinds of the standards. For the other shapes, r
 `operational` or `genai`; both end with `OK: SIM01 follows the simulation standards (0 problems)`.
 
 ### B5. Your own SIM01, with your assistant
+
+*At home (Monday and Tuesday sections).* In the Monday and Tuesday sections, do not move to your team repo: stay
+in this tutorial repo and go on to [C1](#c1-the-expected-values-from-the-truth).
 
 B5 runs in your team repo, next to this one. Move your terminal there (`cd ../<your team repo>`) and start your
 assistant at its root. Part C runs back in this repository.
@@ -431,6 +465,13 @@ same. Then compare SIM01's bullet in your `docs/design.md` with the check's outp
 with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`). They
 should be equal. The new files belong to your team repo: commit them there the way your team works.
 
+If the check stops with `FAILED: expected one src/<package>/events.py, found 2` (or a larger number), your team repo
+has more than one package with an `events.py`. Name the one with SIM01's models: add
+`--events src/<package>/events.py` to every `sim/check.py` command of this step, with your package's folder name in
+place of `<package>` (for a package `retail`: `uv run python sim/check.py SIM01 --events src/retail/events.py`). If
+it says `found 0`, there is no model file yet: ask your assistant to do step 1 of the prompt (`events.py` in your
+package under `src/`). `--events` only names a file that exists.
+
 ## Part C: run a scenario on a simulated data set
 
 **Goal.** A scenario that reads a generated folder, with its `Then` values taken from the truth before the run.
@@ -438,9 +479,12 @@ Then you break the system and read the failure. This part uses SIM01 of the ride
 A2 `When`; the `Given` that reads a generated folder and the `Then` for several zones are already in
 `features/steps/`.
 
-Back in the tutorial repo root: B5 left your terminal in your team repo, so `cd` back to `b5-t2-behave-sim`.
+Part C runs in the tutorial repo root. In the Monday and Tuesday sections your terminal is still there. If you did
+B5 first, your terminal is in your team repo: run `cd ../b5-t2-behave-sim`.
 
 ### C1. The expected values, from the truth
+
+*In the section.*
 
 ```bash
 uv run python sim/query.py SIM01 "
@@ -457,6 +501,8 @@ These are the trips requested in each zone, each once, from `_truth/events.jsonl
 folder.
 
 ### C2. Write the scenario and run it
+
+*In the section.*
 
 In your editor, create `features/sim01_by_zone.feature` with the text below. In its last line, replace `<n48>`,
 `<n161>` and `<n230>` with your three numbers from C1:
@@ -486,6 +532,8 @@ Put the number back, run it again, and check that it passes.
 
 ### C3. Break it: turn the duplicate check off
 
+*In the section.*
+
 `DEDUPE=off` turns off the line of `src/rides/counting.py` that skips an `event_id` already counted. First list
 SIM01's faults, with the zone of each, from the truth:
 
@@ -498,8 +546,8 @@ uv run python sim/query.py SIM01 "
 
 You should see one row for each fault record: its kind (`late` or `twice`), its event and its zone.
 
-**Predict**, in your notes, before you run the next command: with the duplicate check off, which zones' counts go
-up, and is each one up by about the number of `twice` faults in that zone?
+**Predict**, in your notes, before you run the next command: with the duplicate check off, which zones' counts
+change, up or down, and which fault rows explain each change?
 
 ```bash
 DEDUPE=off uv run behave --no-snippets features/sim01_by_zone.feature
@@ -523,7 +571,10 @@ too.
 
 ### C4. Find a planted bug
 
-On Monday and Tuesday, do C4 at home. The branch `bug-late` differs from `main` in one line of
+*At home (Monday and Tuesday sections).*
+
+C4 runs in the tutorial repo root: if you did B5 just before, run `cd ../b5-t2-behave-sim` first. The branch
+`bug-late` differs from `main` in one line of
 `src/rides/counting.py`. You take only that file from it and find the bug from the failing output, before you read
 the line.
 

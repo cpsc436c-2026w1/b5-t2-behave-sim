@@ -1,9 +1,10 @@
 # Prompt: write the generator of your SIM01
 
 Copy the block below into your coding assistant's chat, started in your team repo root. First fill in the four
-lines in angle brackets. Leave the folder names in angle brackets of step 2 (`<source>`, `<day>`, `<hour>`) as
-they are: the assistant fills them in. Before you send it, copy these three files from the tutorial repo into your
-team repo: `docs/simulation-standards.md` to `docs/`, and `sim/check.py` and `sim/query.py` to `sim/`.
+lines in angle brackets. Leave the folder names in angle brackets of step 2 (`<source>`, `<day>`, `<hour>`) and the
+`<package>` of step 4 as they are: the assistant fills them in. Before you send it, copy these three files from the
+tutorial repo into your team repo: `docs/simulation-standards.md` to `docs/`, and `sim/check.py` and `sim/query.py`
+to `sim/`.
 
 ```text
 Write the generator of our simulated data set SIM01, following docs/simulation-standards.md. Read that file in
@@ -28,11 +29,13 @@ Do these steps, in order, and show me what each one wrote:
    say. It is run as: uv run python sim/generate.py
 3. Add or update SIM01's bullet in docs/design.md, section Data: sample, seed, size, time window, faults by kind and
    count, with the counts the generator really wrote.
-4. Run uv run python sim/generate.py, then uv run python sim/check.py SIM01. Do not edit sim/check.py. If the check
-   prints PROBLEM lines, fix the generator, not the check, and run both again until the last lines are OK and the
-   digest.
+4. Run uv run python sim/generate.py, then uv run python sim/check.py SIM01. If src/ has more than one events.py,
+   add --events src/<package>/events.py to every check command, naming the file of step 1. Do not edit
+   sim/check.py. If the check prints PROBLEM lines, fix the generator, not the check, and run both again until the
+   last lines are OK and the digest.
 5. Run both commands a second time and show me that the digest is the same.
-Do not add dependencies other than duckdb and pydantic. Do not call AWS or any network service.
+Do not add dependencies other than duckdb and pydantic. The generator and the check must not call AWS or any
+network service.
 ```
 
 ## What you should see
@@ -45,5 +48,7 @@ OK: SIM01 follows the simulation standards (0 problems)
 digest <16 characters>
 ```
 
-and the same digest after the second run. Read the bullet against the check's `recount` table and its fault lines:
-the numbers must agree. If they do not, the bullet is wrong, or the generator is.
+and the same digest after the second run. If the check you run yourself stops with
+`FAILED: expected one src/<package>/events.py, found 2`, add `--events src/<package>/events.py` to it, with the
+package the assistant wrote in step 1 (README, B5). Read the bullet against the check's `recount` table and its
+fault lines: the numbers must agree. If they do not, the bullet is wrong, or the generator is.
