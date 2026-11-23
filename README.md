@@ -8,7 +8,8 @@ You’ll practice on Checkpoint 1 submission for the rides example we saw in the
 | Part | What you do |
 |---|---|
 | [A: step code for one rule](#part-a-step-code-for-one-rule) | write the three steps of one example; run it to `1 passed` |
-| [B: simulate your own incoming batch](#part-b-simulate-your-own-incoming-batch) | generate SIM01, check it, then have your assistant write your own SIM01 |
+| [B: simulate an incoming batch](#part-b-simulate-your-own-incoming-batch) | generate the rides example's SIM01, look at it and check it |
+| [B5: your own SIM01](#b5-your-own-sim01-with-your-assistant) (after the section) | your assistant writes the generator of your project's data set; a worked example shows the way first |
 | [C: run a scenario on a simulated data set](#part-c-run-a-scenario-on-a-simulated-data-set) | a scenario on SIM01 with its expected value from the truth; break it and read the failure |
 | [D: send it to AWS (needs a lease)](#part-d-send-it-to-aws) | replay SIM01 to S3, read it back, clean up |
 
@@ -21,7 +22,8 @@ You’ll practice on Checkpoint 1 submission for the rides example we saw in the
 | `features/`, `src/rides/`, `sim/generate.py` | the rides example: features, local code, the generator of SIM01 to SIM03 |
 
 Do the steps under [In the section](#in-the-section) in the tutorial section, in order: each needs only the steps
-before it. [After the section](#after-the-section) has the rest, to do at home.
+before it. [After the section](#after-the-section) has the rest, to do at home. Nothing is handed in: what to
+take to your project is listed [at the end](#what-to-take-to-your-project).
 
 ## Before the tutorial
 
@@ -182,7 +184,10 @@ What you should see: the example passed, with no failed and no undefined step. O
 
 A1 to A3 made the example of rule RF010 run. R010 is a different rule of the same feature: when a 5-minute period
 ends, the system stores one count of requested trips for each pickup zone that had a request in the period
-(`docs/requirements.md`). Its two examples reuse your A2 steps and need a few more, which your assistant writes.
+(`docs/requirements.md`). Its two examples reuse your A2 steps and need two more, which your assistant writes:
+"A request at the end of a period is in the next period" uses only steps you already have (it may pass before you
+ask); "Three requests in one period" also needs `When the period between … and … ends` and
+`Then within … s zone … has … trips requested between … and …`.
 
 **Where.** This repository, in a terminal at its root, with your coding assistant started there. The connection to
 the course server is optional: the assistant can write the steps from this repository alone; connected, it can also
@@ -264,7 +269,9 @@ With these steps in place, A5's command, after the section, shows no error: R010
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
 event models, and the truth says what happened, so that a `Then` can state its value before the run. In the section
-you look at SIM01 of the rides example, the data set of Part C, and check it; after the section, B5 makes your own.
+you look at SIM01 of the rides example, the data set of Part C, and check it. Your own project's data set comes
+after the section, in [B5](#b5-your-own-sim01-with-your-assistant), which starts with a worked example on another
+project's data.
 
 #### B1. Generate SIM01, look at it, check it
 
