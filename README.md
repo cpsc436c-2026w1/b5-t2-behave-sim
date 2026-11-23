@@ -281,7 +281,7 @@ git add -A
 git commit -m "R010 steps"
 ```
 
-With these steps in place, A4's command, when you run it, shows no error: R010's first example passes too.
+With these steps in place, A4's command, which you run at home, shows no error: R010's first example passes too.
 
 ## Part B: simulate your own incoming batch
 
@@ -325,7 +325,7 @@ Now look at SIM01 in your editor, one idea at a time.
    - `never`: the event is in the truth and is not delivered.
    - `changed`: a delivery differs from the truth in one field.
 
-   What you should see: one line for each fault, its kind and its `event_id`; SIM01 has only `twice` and `late`
+   What you should see: one line for each fault, its kind (`fault`) and its `event_id`; SIM01 has only `twice` and `late`
    lines, as many of each as the bullet says.
 4. **The model.** Open `src/rides/events.py` and read the class `TripRequested` and the class `Event` it extends.
    Why: one Pydantic model for each event type, shared: the generator checks every event against it before it
