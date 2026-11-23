@@ -425,7 +425,7 @@ What you should see: `OK: SIM01 follows the simulation standards (0 problems)` a
 `uv run python sim/generate.py` and `uv run python sim/check.py SIM01` a second time: the two digests should be the
 same. Then compare SIM01's bullet in your `docs/design.md` with the check's output: its event and delivery totals
 with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`). They
-should be equal.
+should be equal. The new files belong to your team repo: commit them there the way your team works.
 
 ## Part C: run a scenario on a simulated data set
 
@@ -548,7 +548,13 @@ you see, not from the code that changed:
 3. See what the system counted. In `features/steps/count_steps.py`, find the `Then` that failed: `def
    step_stored`, under the two decorators `zone {zone:d} has …`. Add `print(context.counts)` as the first line of
    its body, right below the `def` line and indented like the line under it. Run that example again with
-   `--no-capture` added: behave then shows what the step prints. Which period holds the request: the one of its
+   `--no-capture` added, with the name of your example in the quotes:
+
+   ```bash
+   uv run behave --no-snippets --no-capture --name "<its name>"
+   ```
+
+   behave then shows what the step prints. Which period holds the request: the one of its
    `event_time`, or the one of its `received_time`?
 4. In `src/rides/counting.py`, read `count_requests` and find the line that decides which period a request is
    counted in.
