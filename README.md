@@ -11,7 +11,7 @@ section, you use the same steps to generate a repeatable batch of simulated data
 
 | Part | What you do |
 |---|---|
-| [A: step code for one rule](#part-a-write-the-step-code-for-one-rule) | write the three steps of one example; run it to `1 passed` |
+| [A: step code for one rule](#part-a-write-the-step-code-for-one-rule) | write three steps by hand until one example passes; then have your assistant write a second rule's steps and check them |
 | [B: simulate an incoming batch](#part-b-simulate-an-incoming-batch-and-check-it) | generate the rides example's SIM01, look at it and check it |
 | [B5: your own SIM01](#b5-have-your-assistant-write-your-projects-sim01-then-check-it) (after the section) | your assistant writes the generator of your project's data set; a worked example shows the way first |
 | [C: run a scenario on a simulated data set](#part-c-run-a-scenario-on-a-simulated-data-set) | a scenario on SIM01 with its expected value from the truth; break it and read the failure |
