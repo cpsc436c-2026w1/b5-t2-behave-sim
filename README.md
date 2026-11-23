@@ -42,9 +42,9 @@ added.
    You should see the last line `+ typing-inspection==…` or `Audited … packages`. The first run downloads behave,
    DuckDB, Pydantic and pytest.
 
-4. For Part B on your own project: a coding assistant (Claude Code or Kiro, as in B5T1) and your team repo cloned
-   next to this one, with a small sample of your data in it (your data set's preview file, or about 20 rows of your
-   own data, under 1 MB).
+4. For A5 and B5 you need your coding assistant. For A5, connect it to the course server as in B5T1. For B5, also
+   have your team repo cloned next to this one, with a small sample of your data (your data set's preview file, or
+   about 20 rows) in it.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
@@ -196,41 +196,61 @@ The one error is R010's first example, "Three requests in one period": its `When
 
 ### A5. The rest of R010, with your assistant
 
-**Where.** This repository, in a terminal at its root, with your coding assistant open there and the course server
-connected (as in B5T1).
+**Where.** This repository, in a terminal at its root, with your coding assistant started there and connected to
+the course server as in B5T1, Step 1. This repository has the same example files: `.mcp.json.example` for Claude
+Code, `.kiro/settings/mcp.json.example` for Kiro. Your copy of either does not show in `git status`.
 
-**What.** Ask your assistant for the step code of rule R010. That is the two examples of
-`features/js01_trips_per_zone.feature` under `@R010`: two scenarios, with eight step runs in all. Use the prompt in
-[`prompts/steps.md`](prompts/steps.md). Then run the four checks on that page. Do not take the assistant's word
-that the scenarios pass.
-
-**What you should see**, after check 2:
-
-```text
-1 rule passed, 0 failed, 13 skipped
-2 scenarios passed, 0 failed, 21 skipped
-8 steps passed, 0 failed, 80 skipped
-```
-
-After check 3 (with the boundary bug in):
-
-```text
-Failing scenarios:
-  features/js01_trips_per_zone.feature:22  A request at the end of a period is in the next period
-```
-
-**If your assistant does not get there,** set its version aside, take our step code, and run the checks on it:
+**First, commit your A2 steps.** They stay on your `main`. Then `git status` and `git diff` show only what your
+assistant changes:
 
 ```bash
-git stash -u
-git checkout origin/steps-example -- features/steps/
-uv run behave --no-snippets --tags=@R010
-git stash show -p --include-untracked stash@{0}
+git add -A
+git commit -m "my A2 steps"
 ```
 
-`git stash -u` keeps your assistant's version aside, new files included. The last line shows your assistant's saved changes, new files included; compare them with our step code in `features/steps/`.
+You should see a line with `my A2 steps`; `git status` then says `nothing to commit, working tree clean`. If git
+asks who you are, run the two `git config --global` lines it prints, with your name and email, and commit again.
 
-With these steps in place, A4's command shows `6 scenarios passed, 0 failed`: R010's first example no longer errors.
+**What.** Ask your assistant for the rest of the step code of rule R010: the two examples of
+`features/js01_trips_per_zone.feature` under `@R010`. One of them already passes with your A2 steps. Paste the
+prompt of [`prompts/steps.md`](prompts/steps.md). When the assistant says it is done, run the four checks under
+"Check what it wrote" on that page yourself, in that order. Do not take the assistant's word that the scenarios
+pass.
+
+What you should see, check by check:
+
+1. `git status --short` lists files in `features/steps/` only.
+2. The dry run's last lines have `untested` and no `undefined`.
+3. Both R010 scenarios pass, none fail.
+4. With the boundary bug in, `A request at the end of a period is in the next period` is under
+   `Failing scenarios`; after `git restore`, `git status --short` lists no file in `src/`.
+
+**If your assistant fails a check or refuses,** keep its attempt on a branch of its own, then take our step code:
+
+```bash
+git switch -c assistant-try
+git add -A
+git commit --allow-empty -m "assistant attempt"
+git switch main
+git restore --source origin/steps-example -- features/steps/
+```
+
+`git switch main` brings back your A2 commit, without the assistant's changes. `git restore --source` puts our
+step code in `features/steps/`. Run checks 2 to 4 of `prompts/steps.md` on it. To see what your assistant wrote,
+compare its branch with your A2 commit, then read our step code in `features/steps/` beside it:
+
+```bash
+git diff main assistant-try -- features/steps/
+```
+
+**After A5,** on either path, commit the step code, so that Part C starts from a clean `git status`:
+
+```bash
+git add -A
+git commit -m "R010 steps"
+```
+
+With these steps in place, A4's command shows no error: R010's first example passes too.
 
 ## Part B: simulate your own incoming batch
 
@@ -378,6 +398,8 @@ they should be the same. Then read SIM01's bullet in your `docs/design.md` again
 **Goal.** A scenario that reads a generated folder, with its `Then` value taken from the truth before the run. Then
 you break the system and read the failure. This part uses SIM01 of the rides example and the steps of Part A.
 
+Back in the tutorial repo root: B5 left your terminal in your team repo, so `cd` back to `b5-t2-behave-sim`.
+
 ### C1. The expected value, from the truth
 
 ```bash
@@ -433,8 +455,20 @@ Took 0min 0.019s
 
 ### C3. Break it: turn the duplicate check off
 
-`DEDUPE=off` turns off the line of `src/rides/counting.py` that skips an `event_id` already counted. Before you run
-it, write down which zones you expect to fail, and by how much.
+`DEDUPE=off` turns off the line of `src/rides/counting.py` that skips an `event_id` already counted. First list
+SIM01's faults, with the zone of each, from the truth:
+
+```bash
+uv run python sim/query.py SIM01 "
+  SELECT f.fault, f.event_id, t.pickup_zone_id
+  FROM faults f JOIN truth t USING (event_id)
+  ORDER BY 1, 2"
+```
+
+You should see one row for each fault record: its kind (`late` or `twice`), its event and its zone.
+
+**Predict**, in your notes, before you run the next command: with the duplicate check off, which zones' counts go
+up, and is each one up by about the number of `twice` faults in that zone?
 
 ```bash
 DEDUPE=off uv run behave --no-snippets features/sim01_by_zone.feature
@@ -443,44 +477,18 @@ DEDUPE=off uv run behave --no-snippets features/sim01_by_zone.feature
 On Windows PowerShell, run `$env:DEDUPE = 'off'` first, then the same command without `DEDUPE=off`, and
 `Remove-Item Env:DEDUPE` after this step.
 
-What you should see:
+You should see the scenario under `Failing scenarios`, after an `ASSERT FAILED` line that names a zone, the count
+you expected and the count the system gave.
 
-```text
-ASSERT FAILED: zone 48, between 09:00 and 10:00: expected 304 trips requested, the system counted 307 (DEDUPE=off: the duplicate check is off)
+<details>
+<summary>Check your prediction</summary>
 
-Failing scenarios:
-  features/sim01_by_zone.feature:5  Every request of SIM01 counted once
+Each `twice` request is counted once more, so a zone goes up by its number of `twice` rows; a zone without one does
+not move. The `late` rows do not change the count: they are received before the counts are read. The failure names
+one zone only, because the step stops at the first zone that fails; the fault rows say which other zone would fail
+too.
 
-0 features passed, 1 failed, 0 skipped
-0 scenarios passed, 1 failed, 0 skipped
-2 steps passed, 1 failed, 0 skipped
-Took 0min 0.018s
-```
-
-Find the deliveries that cause it, from the truth:
-
-```bash
-uv run python sim/query.py SIM01 "SELECT f.fault, f.event_id, t.pickup_zone_id FROM faults f JOIN truth t USING (event_id) ORDER BY 1, 2"
-```
-
-What you should see:
-
-```text
-┌─────────┬───────────┬────────────────┐
-│  fault  │ event_id  │ pickup_zone_id │
-│ varchar │  varchar  │     int64      │
-├─────────┼───────────┼────────────────┤
-│ late    │ ev-000103 │            230 │
-│ late    │ ev-001276 │             48 │
-│ twice   │ ev-000100 │             48 │
-│ twice   │ ev-000358 │             48 │
-│ twice   │ ev-001144 │             48 │
-│ twice   │ ev-001955 │            161 │
-└─────────┴───────────┴────────────────┘
-```
-
-Three of the four `twice` requests are in zone 48: 304 + 3 = 307. The check stops at the first zone that fails;
-zone 161 would show 192.
+</details>
 
 ### C4. Find a planted bug
 
