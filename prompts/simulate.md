@@ -1,8 +1,9 @@
 # Prompt: write the generator of your SIM01
 
 Copy the block below into your coding assistant's chat, started in your team repo root. First fill in the four
-lines in angle brackets. Before you send it, copy these three files from the tutorial repo into your team repo:
-`docs/simulation-standards.md` to `docs/`, and `sim/check.py` and `sim/query.py` to `sim/`.
+lines in angle brackets. Leave the folder names in angle brackets of step 2 (`<source>`, `<day>`, `<hour>`) as
+they are: the assistant fills them in. Before you send it, copy these three files from the tutorial repo into your
+team repo: `docs/simulation-standards.md` to `docs/`, and `sim/check.py` and `sim/query.py` to `sim/`.
 
 ```text
 Write the generator of our simulated data set SIM01, following docs/simulation-standards.md. Read that file in
@@ -18,8 +19,9 @@ Its shape: <one of: a batch of files for each day (lakehouse) / a stream of even
 Faults: <kinds and counts from the standards, e.g. 3 twice, 2 late>.
 
 Do these steps, in order, and show me what each one wrote:
-1. Write src/<our package>/events.py: one Pydantic model for each event type, extra="forbid", event_type as a
-   Literal, event_time a UTC time. List the fields in docs/design.md, Event format, if they are not there yet.
+1. Write events.py in our package under src/ (if src/ has no package yet, make one named after our project):
+   one Pydantic model for each event type, extra="forbid", event_type as a Literal, event_time a UTC time.
+   List the fields in docs/design.md, Event format, if they are not there yet.
 2. Write sim/generate.py. It reads only the sample, uses one random.Random with a fixed seed, imports the models
    of step 1 and validates every event with them, and writes sim/data/SIM01/<source>/dt=<day>/hour=<hour>/
    deliveries.jsonl, sim/data/SIM01/_truth/events.jsonl and sim/data/SIM01/_truth/faults.jsonl, as the standards
@@ -45,9 +47,3 @@ digest <16 characters>
 
 and the same digest after the second run. Read the bullet against the check's `recount` table and its fault lines:
 the numbers must agree. If they do not, the bullet is wrong, or the generator is.
-
-## If your assistant can read the course server
-
-Instead of copying `docs/simulation-standards.md`, you can ask the assistant to read the standards from the course
-MCP server (the `cpsc436c_read` tool, page `simulation-standards`) and to write them to
-`docs/simulation-standards.md` first. The rest of the prompt is the same.

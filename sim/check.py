@@ -269,9 +269,10 @@ def main() -> int:
         slowest = max(on_time, default=0)
         late_problems = [f"{i}: first delivered {dur(delays[i])} after event_time, not later than an on-time "
                          f"event ({dur(slowest)})" for i in sorted(late_ids) if delays[i] <= slowest]
-        low, high = min(delays[i] for i in late_ids), max(delays[i] for i in late_ids)
+        low = dur(min(delays[i] for i in late_ids))
+        high = dur(max(delays[i] for i in late_ids))
         report.check("late", late_problems, f"{pl(kinds['late'], 'event')} first delivered "
-                     f"{dur(low) if low == high else dur(low) + ' to ' + dur(high)} after event_time; "
+                     f"{low if low == high else low + ' to ' + high} after event_time; "
                      f"every other event within {dur(slowest)}")
     else:
         report.check("late", [], "none")
