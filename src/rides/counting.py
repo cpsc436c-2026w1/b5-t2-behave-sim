@@ -20,7 +20,7 @@ def period_start(event_time: str) -> str:
     """
     t = parse(event_time)
     start = t.replace(minute=0, second=0, microsecond=0)
-    while not (start <= t < start + PERIOD):
+    while not (start <= t <= start + PERIOD):
         start += PERIOD
     return start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
