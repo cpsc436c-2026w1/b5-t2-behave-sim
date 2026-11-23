@@ -119,5 +119,8 @@ uv run python sim/check.py SIM01
 
 The check validates every line against your models, recounts the truth and each fault kind with DuckDB, and ends
 with `OK: SIM01 follows the simulation standards (0 problems)` or `FAILED: …` and the lines that break a standard.
+`OK` covers the checks it prints. The sample's licence, the absence of personal data, the bullet of standard 3 and
+that the system never reads `_truth/` are yours to check. If `src/` has more than one `events.py`, name the file of
+the data set's models: `uv run python sim/check.py SIM01 --events src/<package>/events.py`.
 `sim/check.py` and `sim/query.py` are single files: copy them to `sim/` of your team repo, and add `duckdb` and
 `pydantic` (`uv add duckdb pydantic`).
