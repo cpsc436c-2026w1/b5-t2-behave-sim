@@ -13,8 +13,8 @@ full first, then the section Data of docs/design.md.
 Our sample: <path of the sample file in this repo, e.g. sim/seed/sample.csv>. It is <what one row is, e.g. one
 weather station's reading for one day>. Do not change it. If the repo has no sample yet, stop and ask me.
 
-SIM01 shows: <the requirement IDs and, in a sentence, what the data set is for, e.g. RF010: a reading delivered
-twice is stored once>.
+SIM01 shows: <the requirement IDs and, in a sentence, what the data set is for, e.g. RF010: when a reading is
+delivered twice, the system shall store it once>.
 Its shape: <one of: a batch of files for each day (lakehouse) / a stream of events with arrival times
 (operational) / a set of questions with their answers known (generative AI)>.
 Faults: <kinds and counts from the standards, e.g. 3 twice, 2 late>.
