@@ -48,13 +48,6 @@ in-section step needs only the in-section steps before it.
 4. For A5 and B5 you need your coding assistant. For A5, connect it to the course server as in B5T1. For B5, also
    have your team repo cloned next to this one, with a small sample of your data (your data set's preview file, or
    about 20 rows) in it.
-5. Read [`docs/simulation-standards.md`](docs/simulation-standards.md): Part B checks the rides example's SIM01
-   against it, and B5 asks your assistant to follow it.
-6. Pick the shape nearest your project: `lakehouse` (a batch of files for each day), `operational` (a stream of
-   events with arrival times) or `genai` (questions with their answers known). Skim that shape's own README:
-   [`shapes/lakehouse/README.md`](shapes/lakehouse/README.md),
-   [`shapes/operational/README.md`](shapes/operational/README.md) or
-   [`shapes/genai/README.md`](shapes/genai/README.md). B4 runs that shape.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
@@ -293,11 +286,10 @@ With these steps in place, A4's command, when you run it, shows no error: R010's
 ## Part B: simulate your own incoming batch
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
-event models, and the truth says what happened, so that a `Then` can state its value before the run. These steps
-check SIM01 of the rides example against [`docs/simulation-standards.md`](docs/simulation-standards.md), which you
-read before the tutorial, then your own.
+event models, and the truth says what happened, so that a `Then` can state its value before the run. In the section
+you look at SIM01 of the rides example, the data set of Part C, and check it; at home, B5 makes your own.
 
-### B1. Generate SIM01 and check it
+### B1. Generate SIM01, look at it, check it
 
 *In the section.*
 
@@ -313,6 +305,35 @@ SIM01 rush-hour: 2511 events, 2515 deliveries, 6 fault records (late, twice) -> 
 SIM02 quiet-zone: 2331 events, 2331 deliveries, 1 fault records (quiet) -> sim/data/SIM02/
 SIM03 double-accept: 60 events, 60 deliveries, 10 fault records (later-first) -> sim/data/SIM03/
 ```
+
+Now open four files in your editor, one idea each.
+
+1. **The bullet.** In `docs/design.md`, section Data, read the bullet **SIM01 Rush hour**. Why: the design says what
+   a data set holds before it is made: the sample it comes from, the seed, the size and the faults by kind and
+   count. What you should see: its events and deliveries are the numbers on the generator's SIM01 line, and its
+   faults by kind add up to that line's fault records.
+2. **What the system receives, and what happened.** Open
+   `sim/data/SIM01/trip-events/dt=2026-11-23/hour=09/deliveries.jsonl` and `sim/data/SIM01/_truth/events.jsonl`,
+   and compare their first lines. Why: the system reads only the deliveries, in the order received; the truth holds
+   each event once, as it happened, and the system never reads it. What you should see: the same `event_id` with
+   the same fields, and the delivery has one field more, `received_time`, at or after its `event_time`. The folders
+   `dt=` and `hour=` are the day and hour of `received_time`.
+3. **The faults.** Open `sim/data/SIM01/_truth/faults.jsonl`. Why: each fault the generator put in is written down
+   with the event it is about, so a `Then` can count with it. There are four kinds:
+   - `twice`: the event is delivered one more time.
+   - `late`: the event takes longer to arrive than any event not marked `late`.
+   - `never`: the event is in the truth and is not delivered.
+   - `changed`: a delivery differs from the truth in one field.
+
+   What you should see: one line for each fault, its kind and its `event_id`; SIM01 has only `twice` and `late`
+   lines, as many of each as the bullet says.
+4. **The model.** Open `src/rides/events.py` and read the class `TripRequested` and the class `Event` it extends.
+   Why: one Pydantic model for each event type, shared: the generator checks every event against it before it
+   writes a file, and the check below validates every line against it, so a wrong field stops the generator before
+   it reaches the system. What you should see: the fields of `Event` and `TripRequested` are the fields of the truth
+   line you opened in 2.
+
+Then check the whole data set:
 
 ```bash
 uv run python sim/check.py SIM01
@@ -365,7 +386,10 @@ uv run python sim/check.py SIM01
 ```
 
 What you should see: the same output as B1, with the same digest on the last line as your B1 run. The generator
-uses one seeded random generator, so it writes the same files each time.
+uses one seeded random generator (the seed is in the bullet), so it writes the same files each time.
+
+[`docs/simulation-standards.md`](docs/simulation-standards.md) sums up what you just saw on SIM01 (the models, the
+two folders, the bullet and its faults, the seed) as seven conventions, for your own data set in B5.
 
 ### B3. The Parquet step
 
@@ -389,9 +413,10 @@ JSON Lines stay as they are: Parquet is a separate step.
 
 *At home.*
 
-Take the shape folder whose README you skimmed before the tutorial ([`shapes/`](shapes/README.md)): `lakehouse` (a
-batch of files for each day), `operational` (a stream of events with arrival times) or `genai` (questions with their
-answers known). Read its `generate.py`, then run it. For the lakehouse shape:
+Pick the shape folder nearest your project ([`shapes/`](shapes/README.md)): `lakehouse` (a batch of files for each
+day), `operational` (a stream of events with arrival times) or `genai` (questions with their answers known). Read its
+README ([`lakehouse`](shapes/lakehouse/README.md), [`operational`](shapes/operational/README.md),
+[`genai`](shapes/genai/README.md)) and its `generate.py`, then run it. For the lakehouse shape:
 
 ```bash
 uv run python shapes/lakehouse/generate.py
