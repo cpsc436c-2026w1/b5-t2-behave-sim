@@ -85,10 +85,14 @@ generator twice, and the two digests are the same.
 A `Then` states a value that you know before the system runs: compute it from `_truth/`, not from the system's
 output.
 
-Rides: the 304, 191 and 342 trips of SIM01's `Then` are the requests in `_truth/events.jsonl` by zone:
+Rides: the trip counts in SIM01's `Then` are the requests in `_truth/events.jsonl`, counted by zone:
 
 ```bash
-uv run python sim/query.py SIM01 "SELECT pickup_zone_id, count(*) AS trips FROM truth WHERE event_type = 'trip_requested' GROUP BY 1 ORDER BY 1"
+uv run python sim/query.py SIM01 "
+  SELECT pickup_zone_id, count(*) AS trips
+  FROM truth
+  WHERE event_type = 'trip_requested'
+  GROUP BY 1 ORDER BY 1"
 ```
 
 ## 6. Parquet is a separate step, with a row-count check
