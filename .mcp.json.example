@@ -1,0 +1,13 @@
+{
+  "mcpServers": {
+    "436c": {
+      "type": "http",
+      "url": "https://kb-cloud-students.fly.dev/mcp",
+      "headers": { "Authorization": "Bearer ${KB_MCP_TOKEN}" }
+    },
+    "aws-knowledge": {
+      "type": "http",
+      "url": "https://knowledge-mcp.global.api.aws"
+    }
+  }
+}

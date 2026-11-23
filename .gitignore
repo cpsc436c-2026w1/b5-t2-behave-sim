@@ -5,3 +5,6 @@ __pycache__/
 sim/parquet/
 shapes/*/data/
 shapes/*/parquet/
+.mcp.json
+.kiro/settings/mcp.json
+.claude/
