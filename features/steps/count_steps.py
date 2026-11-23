@@ -1,4 +1,4 @@
-"""Steps for the counts of trips requested (rules RF010 and RF020)."""
+"""Steps for the counts of trips requested (rules R020, RF010 and RF020)."""
 from behave import then, when
 
 from rides.counting import NO_DATA, count_requests, dedupe_is_on, show
@@ -38,6 +38,20 @@ def step_count(context, zone, expected, start, end):
 def step_no_data(context, zone, start, end):
     actual = show(context.counts, zone, start_of(start))
     assert actual == NO_DATA, f"{label(zone, start_of(start))}: expected no data, the system shows {actual}"
+
+
+@when("the time is {time}")
+def step_time_is(context, time):
+    """R020: the stored counts at that time, from the requests received by then, late ones included."""
+    context.counts = count_requests(context.deliveries, read_at=time)
+
+
+@then("zone {zone:d} has {expected:d} trip requested between {start} and {end}")
+@then("zone {zone:d} has {expected:d} trips requested between {start} and {end}")
+def step_stored(context, zone, expected, start, end):
+    actual = show(context.counts, zone, start_of(start))
+    assert actual == expected, (f"{label(zone, start_of(start))}: expected {expected} trips stored, "
+                                f"the system has {actual}{switch_note()}")
 
 
 @then("zones {zones} show {totals} trips requested between {start} and {end}")
