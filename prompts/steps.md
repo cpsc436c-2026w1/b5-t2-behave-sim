@@ -21,12 +21,14 @@ first: it reads what the assistant changed before any later check restores a fil
    git status --short
    ```
 
-   You should see only files in `features/steps/` (and `features/environment.py`, if it changed it). A file in
+   You should see only files in `features/steps/` (and `features/environment.py`, already in this repository, if
+   it changed it). A file in
    `src/` or a `.feature` file in the list means the assistant changed the system or the test to make it pass. Read
    what it changed, then undo it, one `git restore` for each file listed:
 
    ```bash
-   git diff HEAD -- src/ 'features/*.feature'
+   git diff -- src/ 'features/*.feature'
+   git diff --cached -- src/ 'features/*.feature'
    git restore --staged --worktree <file>
    ```
 
