@@ -162,12 +162,14 @@ def step_read(context, time):
 @then("zone {zone:d} shows {expected:d} trip requested between {start} and {end}")
 @then("zone {zone:d} shows {expected:d} trips requested between {start} and {end}")
 def step_count(context, zone, expected, start, end):
-    actual = show(context.counts, zone, start_of(start))
+    actual = count_between(context.counts, zone, start_of(start), start_of(end))
     assert actual == expected, (f"{label(zone, start_of(start))}: expected {expected} trips requested, "
                                 f"the system counted {actual}{switch_note()}")
 ```
 
-`count_requests`, `show`, `start_of`, `label` and `switch_note` are already imported or defined in `count_steps.py`.
+`count_requests`, `count_between`, `start_of`, `label` and `switch_note` are already imported or defined in
+`count_steps.py`. `count_between` adds up what our code's `show` gives for the zone in each period from `start` up
+to `end`: the `Then` uses every value its line names.
 The `Given` goes in `data_steps.py`, which imports `given`; pasted into `count_steps.py`, it stops with a `NameError`.
 
 ### A3. Run it again
