@@ -306,7 +306,7 @@ SIM02 quiet-zone: 2331 events, 2331 deliveries, 1 fault records (quiet) -> sim/d
 SIM03 double-accept: 60 events, 60 deliveries, 10 fault records (later-first) -> sim/data/SIM03/
 ```
 
-Now open four files in your editor, one idea each.
+Now look at SIM01 in your editor, one idea at a time.
 
 1. **The bullet.** In `docs/design.md`, section Data, read the bullet **SIM01 Rush hour**. Why: the design says what
    a data set holds before it is made: the sample it comes from, the seed, the size and the faults by kind and
