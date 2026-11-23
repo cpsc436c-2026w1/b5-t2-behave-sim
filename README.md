@@ -208,7 +208,7 @@ Errored scenarios:
 ```
 
 Before A5, the one error is R010's first example, "Three requests in one period": its `When the period … ends` and
-`Then within 30 s …` have no step code in this repository. Writing them is the same work as A2, which you do with
+`Then within 60 s …` have no step code in this repository. Writing them is the same work as A2, which you do with
 your assistant in A5.
 
 ### A5. The rest of R010, with your assistant
