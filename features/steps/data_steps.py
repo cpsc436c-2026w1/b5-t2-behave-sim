@@ -7,6 +7,7 @@ from sim.generate import OUT, load
 
 @given("only these trip requests are received:")
 def step_requests_table(context):
+    """Each row of the example's table is one delivery, in the order of the rows."""
     for row in context.table:
         delivery = dict(zip(context.table.headings, row.cells))
         delivery["event_type"] = "trip_requested"
