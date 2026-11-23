@@ -5,8 +5,12 @@ from sim.datasets import DATA_SETS
 from sim.generate import OUT, load
 
 
-# B5T2 Part A: write the step "only these trip requests are received:" here. It reads the example's table
-# (context.table) and adds each row to context.deliveries as a trip_requested delivery.
+@given("only these trip requests are received:")
+def step_requests_table(context):
+    for row in context.table:
+        delivery = dict(zip(context.table.headings, row.cells))
+        delivery["event_type"] = "trip_requested"
+        context.deliveries.append(delivery)
 
 
 @given("the function fails after it counted {event_id} and receives both requests again")
