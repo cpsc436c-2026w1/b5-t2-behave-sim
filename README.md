@@ -42,9 +42,9 @@ before it. [After the section](#after-the-section) has the rest, to do at home.
    You should see it finish without an error. Its last lines list the packages it installed, or say that it audited
    them; the names and numbers may differ. The first run downloads behave, DuckDB, Pydantic and pytest.
 
-4. For A4 and B5 you need your coding assistant. For A4, connecting it to the course server as in B5T1 is optional.
-   For B5, also have your team repo cloned next to this one, with a small sample of your data (your data set's
-   preview file, or about 20 rows) in it.
+4. For A4 and B5 you use your coding assistant (A4 has a fallback without one). For A4, connecting it to the
+   course server as in B5T1 is optional. For B5, also have your team repo cloned next to this one, with a small
+   sample of your data (your data set's preview file, or about 20 rows) in it.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
@@ -190,8 +190,8 @@ read the course's pages. To connect it, do as in
 [B5T1, Step 1](https://github.com/cpsc436c-2026w1/b5-t1-mcp-evals/blob/main/mcp/README.md#step-1-connect-your-assistant).
 This repository has the same example files: `.mcp.json.example` for Claude
 Code, `.kiro/settings/mcp.json.example` for Kiro. Your copy of either does not show in `git status`. If your
-assistant cannot connect or is not available, commit your A2 steps as below, then take our step code: the fallback
-at the end of A4.
+assistant cannot connect to the course server, run A4 without the server. If you have no assistant, or it does not
+start, commit your A2 steps as below, then take our step code: the fallback below.
 
 **First, commit your A2 steps.** They stay on your `main`. Then `git status` and `git diff` show only what your
 assistant changes:
@@ -223,8 +223,8 @@ What you should see, check by check:
 Then read each `Then` step it wrote, as the end of `prompts/steps.md` says: the expected number comes from the line
 of the feature, the actual number from our code.
 
-**If your assistant cannot connect or is not available, fails check 2, 3 or 4 (after any undo of check 1), refuses,
-or is still working when your TA moves the section on,** take our step code. First stop the assistant, if it is
+**If you have no assistant, or it does not start, fails check 2, 3 or 4 (after any undo of check 1), refuses, or is
+still working when your TA moves the section on,** take our step code. First stop the assistant, if it is
 running: cancel its run (in Claude Code, press Esc) and wait until it shows no running command, so that it changes
 no more files. Then keep its attempt on a branch of its own and take our step code:
 
@@ -259,8 +259,8 @@ With these steps in place, A5's command, after the section, shows no error: R010
 ### Part B: simulate your own incoming batch
 
 - **Deliveries**: what the system receives, in the order it arrives, repeats and late arrivals included.
-- **Truth** (`_truth/`): each event once, as it happened, and the faults the generator put in. The expected answers
-  are computed from the truth; the system never reads it.
+- **Truth** (`_truth/`): each event once, as it happened, and the faults the generator injected. The expected
+  answers are computed from the truth; the system never reads it.
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
 event models, and the truth says what happened, so that a `Then` can state its value before the run. In the section
@@ -500,7 +500,8 @@ JSON Lines stay as they are: Parquet is a separate step.
 Pick the shape folder nearest your project ([`shapes/`](shapes/README.md)): `lakehouse` (a batch of files for each
 day), `operational` (a stream of events with arrival times) or `genai` (questions with their answers known). Read its
 README ([`lakehouse`](shapes/lakehouse/README.md), [`operational`](shapes/operational/README.md),
-[`genai`](shapes/genai/README.md)) and its `generate.py`, then run it. For the lakehouse shape:
+[`genai`](shapes/genai/README.md)) and its `generate.py`, then run it. For the lakehouse shape (for another shape,
+put `operational` or `genai` in place of `lakehouse` in both lines):
 
 ```bash
 uv run python shapes/lakehouse/generate.py
@@ -537,14 +538,15 @@ This data set has all four fault kinds of the standards. For the other shapes, r
 ### B5. Your own SIM01, with your assistant
 
 **First, a worked example, in this repository.** It takes the lakehouse shape of B4 (weather stations, one batch
-file a night) from one requirement to the expected result of its scenario. If you ran another shape in B4, run
-`uv run python shapes/lakehouse/generate.py` first.
+file a night) from one requirement to the expected result of its scenario. Run
+`uv run python shapes/lakehouse/generate.py` first, unless you ran it in B4.
 
-1. **Requirement**, written as in Checkpoint 1: **RF010** Every reading must be stored exactly once, even when a
+1. **Requirement**, written as in Checkpoint 1, with that team's own ID: **RF010** Every reading must be stored exactly once, even when a
    later batch file sends it again.
 2. **Sample**: `shapes/lakehouse/sample/ghcn_daily_sample.csv`. One row is one weather station's reading of one
    element (TMAX, TMIN or PRCP) for one day.
-3. **Fault** that the requirement is about: `twice`, 3 of them (a reading sent again in the next batch file). The
+3. **Fault** that the requirement is about: `twice`, 3 of them (a reading sent again in the next batch file; the
+   seed fixes the count, as the shape's README says). The
    shape's SIM01 also has `late`, `never` and `changed` faults, for its other requirements.
 4. **Expected result**, from the truth, before any run: the readings stored for each station. A `never` reading is
    not delivered, so the system cannot store it: the query leaves it out.
@@ -560,7 +562,7 @@ file a night) from one requirement to the expected result of its scenario. If yo
    What you should see: one row for each station of the sample; the `sent_twice` values add up to the 3 `twice`
    faults. A system that stores a reading again when it is sent twice shows `readings` + `sent_twice` for that
    station, more than `readings`.
-5. **Scenario** it becomes, with a station whose `sent_twice` is above 0 in place of `<station>`, and its
+5. **Scenario** it becomes, with any one station whose `sent_twice` is above 0 in place of `<station>`, and its
    `readings` in place of `<n>`:
 
    ```gherkin
@@ -583,7 +585,7 @@ file a night) from one requirement to the expected result of its scenario. If yo
 
 For your project, do the same with one of your Checkpoint 1 requirements.
 
-**Then your own, in your team repo.** The rest of B5 runs in your team repo, next to this one. Move your terminal
+**Then SIM01 for your project, in your team repo.** The rest of B5 runs in your team repo, next to this one. Move your terminal
 there (`cd ../<your team repo>`) and start your assistant at its root. C4 runs back in this repository.
 
 1. Copy three files from this repository into your team repo: `docs/simulation-standards.md` to `docs/`, and
@@ -603,13 +605,22 @@ there (`cd ../<your team repo>`) and start your assistant at its root. C4 runs b
 
 3. The prompt reads the section Data of your team's `docs/design.md`, from Checkpoint 1. If `docs/design.md` does
    not exist, create it. If it has no `## Data` section, add one, with a line that names your sample file (for
-   example `Our sample: data/preview.csv, 20 rows of our data set.`). A new file with only that heading and line is
-   enough.
-4. Open [`prompts/simulate.md`](prompts/simulate.md). Fill in the four lines that start with `Our sample:`,
-   `SIM01 shows:`, `Its shape:` and `Faults:`: replace each placeholder, its angle brackets and the `e.g.` example
-   inside them included, with your own project's words. The `Our sample:` line has two: the path, and what one row
-   is. For `Faults:`, choose the kinds your requirements need from the four kinds of the standards, with 2 or 3 of
-   each. Send the prompt to your assistant.
+   example `Our sample: data/preview.csv, 20 rows of our data set.`). A new file with only these two lines is
+   enough:
+
+   ```markdown
+   ## Data
+
+   Our sample: data/preview.csv, 20 rows of our data set.
+   ```
+
+4. Open [`prompts/simulate.md`](prompts/simulate.md) and copy its text block into your assistant's chat; do not edit
+   the file itself. In the chat, fill in the four lines that start with `Our sample:`, `SIM01 shows:`, `Its shape:`
+   and `Faults:`, as the worked example's table does: replace each placeholder, its angle brackets and the `e.g.`
+   example inside them included, with your own project's words. The `Our sample:` line has two: the path, and what
+   one row is. For `SIM01 shows:`, the requirement of your worked example is enough; add another requirement only if
+   you want its fault in the same data set. For `Faults:`, the kinds those requirements need, from the four kinds of
+   the standards, with 2 or 3 of each. Send the prompt to your assistant.
 5. When the assistant says it is done, run the check yourself:
 
    ```bash
@@ -620,7 +631,19 @@ What you should see: `OK: SIM01 follows the simulation standards (0 problems)` a
 `uv run python sim/generate.py` and `uv run python sim/check.py SIM01` a second time: the two digests should be the
 same. Then compare SIM01's bullet in your `docs/design.md` with the check's output: its event and delivery totals
 with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`). They
-should be equal. The new files belong to your team repo: commit them there the way your team works.
+should be equal.
+
+The new files belong to your team repo. Commit them there, from its root:
+
+```bash
+git status --short
+git add -A
+git commit -m "SIM01 generator and check"
+```
+
+`git status --short` lists the three files you copied, `pyproject.toml` and `uv.lock` if they are new, and the
+assistant's files in `src/`, `sim/` and `docs/`. If your team works on branches with pull requests, run
+`git switch -c sim01` before `git add`, then push the branch and open a pull request.
 
 If the check stops with `FAILED: expected one src/<package>/events.py, found 2` (or a larger number), your team repo
 has more than one package with an `events.py`. Name the one with SIM01's models: add
@@ -734,7 +757,9 @@ AWS.
   the simulation standards (they are guidance, not required), also `sim/check.py` printing `OK`.
 - One scenario like C2, with its `Then` values taken from your truth with `sim/query.py`. To run it on your own
   deliveries, write the three steps in your team repo, as you did in A2: a `Given` that reads every
-  `deliveries.jsonl` under your `sim/data/SIM01/`, in the order received, and not `_truth/` (ours,
-  `Given the deliveries of SIM01` in `features/steps/data_steps.py`, reads only the rides data); a `When` that runs
-  your code on them; a `Then` that compares what your code gives with the number from your truth. Then run it with
-  `uv run behave --no-snippets features/<your feature file>`.
+  `deliveries.jsonl` under your `sim/data/SIM01/`, in the order of their `received_time`, and not `_truth/` (the tutorial's
+  `Given the deliveries of SIM01`, in `features/steps/data_steps.py`, reads only the rides data); a `When` that runs
+  your code on them (if your team has no code for it yet, the scenario waits for that code); a `Then` that compares
+  what your code gives with the number from your truth. Then run it with
+  `uv run behave --no-snippets features/<your feature file>` (run `uv add behave` first if your team repo's
+  `pyproject.toml` does not list behave).
