@@ -408,11 +408,13 @@ assistant at its root. Part C runs back in this repository.
 
 3. The prompt reads the section Data of your team's `docs/design.md`, from Checkpoint 1. If `docs/design.md` does
    not exist, create it. If it has no `## Data` section, add one, with a line that names your sample file (for
-   example `Our sample: data/preview.csv, 20 rows of our data set.`).
+   example `Our sample: data/preview.csv, 20 rows of our data set.`). A new file with only that heading and line is
+   enough.
 4. Open [`prompts/simulate.md`](prompts/simulate.md). Fill in the four lines that start with `Our sample:`,
    `SIM01 shows:`, `Its shape:` and `Faults:`: replace each placeholder, its angle brackets and the `e.g.` example
-   inside them included, with your own project's words. For `Faults:`, choose the kinds your requirements need from
-   the four kinds of the standards, and a few of each. Send the prompt to your assistant.
+   inside them included, with your own project's words. The `Our sample:` line has two: the path, and what one row
+   is. For `Faults:`, choose the kinds your requirements need from the four kinds of the standards, with 2 or 3 of
+   each. Send the prompt to your assistant.
 5. When the assistant says it is done, run the check yourself:
 
    ```bash
@@ -543,8 +545,9 @@ you see, not from the code that changed:
 1. Which rule's examples fail, and which rules pass? In `features/js01_trips_per_zone.feature`, compare the
    `event_time` and `received_time` columns of a failing example with those of a passing one (any of each).
 2. Run one failing example alone (any one of them), with `--name` and its name in quotes, as in A1.
-3. See what the system counted. In `features/steps/count_steps.py`, add `print(context.counts)` as the first line
-   of the `Then` that failed (`step_stored`, under `zone {zone:d} has …`). Run that example again with
+3. See what the system counted. In `features/steps/count_steps.py`, find the `Then` that failed: `def
+   step_stored`, under the two decorators `zone {zone:d} has …`. Add `print(context.counts)` as the first line of
+   its body, right below the `def` line and indented like the line under it. Run that example again with
    `--no-capture` added: behave then shows what the step prints. Which period holds the request: the one of its
    `event_time`, or the one of its `received_time`?
 4. In `src/rides/counting.py`, read `count_requests` and find the line that decides which period a request is
