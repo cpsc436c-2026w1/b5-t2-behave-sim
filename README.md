@@ -257,9 +257,10 @@ What you should see, check by check:
 Then read each `Then` step it wrote, as the end of `prompts/steps.md` says: the expected number comes from the line
 of the feature, the actual number from our code.
 
-**If your assistant fails a check, refuses, or is still working when your TA moves the section on,** take our step
-code. First stop the assistant: cancel its run (in Claude Code, press Esc) and wait until it shows no running
-command, so that it changes no more files. Then keep its attempt on a branch of its own and take our step code:
+**If your assistant fails check 2, 3 or 4 (after any undo of check 1), refuses, or is still working when your TA
+moves the section on,** take our step code. First stop the assistant: cancel its run (in Claude Code, press Esc)
+and wait until it shows no running command, so that it changes no more files. Then keep its attempt on a branch of
+its own and take our step code:
 
 ```bash
 git switch -c assistant-try
