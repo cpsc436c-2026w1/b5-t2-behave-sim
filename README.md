@@ -200,7 +200,7 @@ The one error is R010's first example, "Three requests in one period": its `When
 connected (as in B5T1).
 
 **What.** Ask your assistant for the step code of rule R010. That is the two examples of
-`features/js01_trips_per_zone.feature` under `@R010`, five steps in all. Use the prompt in
+`features/js01_trips_per_zone.feature` under `@R010`: two scenarios, with eight step runs in all. Use the prompt in
 [`prompts/steps.md`](prompts/steps.md). Then run the four checks on that page. Do not take the assistant's word
 that the scenarios pass.
 
@@ -225,10 +225,10 @@ Failing scenarios:
 git stash -u
 git checkout origin/steps-example -- features/steps/
 uv run behave --no-snippets --tags=@R010
-git diff stash@{0} -- features/steps/
+git stash show -p --include-untracked stash@{0}
 ```
 
-`git stash -u` keeps your assistant's version aside, new files included. The last line shows how our step code differs from it.
+`git stash -u` keeps your assistant's version aside, new files included. The last line shows your assistant's saved changes, new files included; compare them with our step code in `features/steps/`.
 
 With these steps in place, A4's command shows `6 scenarios passed, 0 failed`: R010's first example no longer errors.
 
