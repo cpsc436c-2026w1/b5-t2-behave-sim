@@ -1,11 +1,12 @@
 # Prompt: step code for one rule, with your assistant
 
-Paste this into your coding assistant (Claude Code or Kiro), at the root of this repository, with the course server
-connected:
+Paste this into your coding assistant (Claude Code or Kiro), at the root of this repository. The connection to the
+course server is optional: the same prompt works with it and without it.
 
 ```text
 Write the step code so the scenarios of rule R010 in features/js01_trips_per_zone.feature run with behave against
-our code. Follow how the course expects step code to be written; check with the course server.
+our code. Follow how the step code already in features/steps/ is written; if you are connected to the course
+server, also check what its pages say about step code.
 This is B5T2 tutorial practice for Checkpoint 2, not the Checkpoint 1 hand-in. Do not commit: I check your changes
 with git myself.
 ```
