@@ -135,7 +135,8 @@ def step_requests_table(context):
 Open `features/steps/count_steps.py` and replace its comment that starts with `# B5T2 Part A` (all of its `#`
 lines) with the `When` and the `Then`.
 `{time}` and `{zone:d}` are parameters: behave passes the text in that place of the line to the function, and `:d`
-makes it a number. The `Then` has two decorators so that `1 trip` and `2 trips` both match:
+makes it a number. The `Then` has two decorators so that `1 trip` and `2 trips` both match: the first says
+`trip requested`, the second `trips requested`.
 
 ```python
 @when("the counts are read at {time}")
@@ -199,7 +200,9 @@ your assistant in A5.
 ### A5. The rest of R010, with your assistant
 
 **Where.** This repository, in a terminal at its root, with your coding assistant started there and connected to
-the course server as in B5T1, Step 1. This repository has the same example files: `.mcp.json.example` for Claude
+the course server as in
+[B5T1, Step 1](https://github.com/cpsc436c-2026w1/b5-t1-mcp-evals/blob/main/mcp/README.md#step-1-connect-your-assistant).
+This repository has the same example files: `.mcp.json.example` for Claude
 Code, `.kiro/settings/mcp.json.example` for Kiro. Your copy of either does not show in `git status`.
 
 **First, commit your A2 steps.** They stay on your `main`. Then `git status` and `git diff` show only what your
@@ -404,10 +407,12 @@ assistant at its root. Part C runs back in this repository.
    ```
 
 3. The prompt reads the section Data of your team's `docs/design.md`, from Checkpoint 1. If `docs/design.md` does
-   not exist, create it. If it has no `## Data` section, add one, with a line that names your sample file.
+   not exist, create it. If it has no `## Data` section, add one, with a line that names your sample file (for
+   example `Our sample: data/preview.csv, 20 rows of our data set.`).
 4. Open [`prompts/simulate.md`](prompts/simulate.md). Fill in the four lines that start with `Our sample:`,
-   `SIM01 shows:`, `Its shape:` and `Faults:` (each placeholder in angle brackets on them), and send the prompt to
-   your assistant.
+   `SIM01 shows:`, `Its shape:` and `Faults:`: replace each placeholder, its angle brackets and the `e.g.` example
+   inside them included, with your own project's words. For `Faults:`, choose the kinds your requirements need from
+   the four kinds of the standards, and a few of each. Send the prompt to your assistant.
 5. When the assistant says it is done, run the check yourself:
 
    ```bash
@@ -469,7 +474,7 @@ uv run behave --no-snippets features/sim01_by_zone.feature
 
 You should see the scenario passed, with no failed or undefined step.
 
-Now make it wrong on purpose: in the last line, change one of your three numbers by one, and run the same command.
+Now make it wrong on purpose: in the last line, change one of your three numbers (any one) by one, and run the same command.
 You should see the scenario under `Failing scenarios`, and an `ASSERT FAILED` line that names the zone you changed.
 Put the number back, run it again, and check that it passes.
 
@@ -536,7 +541,7 @@ You should see some scenarios under `Failing scenarios`, each after its `ASSERT 
 you see, not from the code that changed:
 
 1. Which rule's examples fail, and which rules pass? In `features/js01_trips_per_zone.feature`, compare the
-   `event_time` and `received_time` columns of a failing example with those of a passing one.
+   `event_time` and `received_time` columns of a failing example with those of a passing one (any of each).
 2. Run one failing example alone (any one of them), with `--name` and its name in quotes, as in A1.
 3. See what the system counted. In `features/steps/count_steps.py`, add `print(context.counts)` as the first line
    of the `Then` that failed (`step_stored`, under `zone {zone:d} has …`). Run that example again with
