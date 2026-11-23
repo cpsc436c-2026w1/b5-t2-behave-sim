@@ -61,5 +61,6 @@ first: it reads what the assistant changed before any later check restores a fil
    `git status --short` lists no file in `src/`.
 
 Then read each `Then` step it wrote. The expected number must come from the line in the feature, as a
-parameter such as `{expected:d}`. The step must get the actual number from our code (`count_requests`, `show`). A
-number in the line, such as the `30` of `within 30 s`, must be a parameter that the step uses.
+parameter such as `{expected:d}`. The step must get the actual number from our code (`count_requests`, `show`, or
+`count_between`, which calls `show`). A number or time in the line, such as the `30` of `within 30 s` or the end of
+a period, must be a parameter that the step uses.
