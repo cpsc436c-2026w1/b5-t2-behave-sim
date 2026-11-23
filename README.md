@@ -39,8 +39,8 @@ added.
    uv sync
    ```
 
-   You should see the last line `+ typing-inspection==…` or `Audited … packages`. The first run downloads behave,
-   DuckDB, Pydantic and pytest.
+   You should see it finish without an error. Its last lines list the packages it installed, or say that it audited
+   them; the names and numbers may differ. The first run downloads behave, DuckDB, Pydantic and pytest.
 
 4. For A5 and B5 you need your coding assistant. For A5, connect it to the course server as in B5T1. For B5, also
    have your team repo cloned next to this one, with a small sample of your data (your data set's preview file, or
@@ -64,7 +64,8 @@ uv run behave features/js01_trips_per_zone.feature --name "One request delivered
 This tutorial always runs one scenario or one tag. A plain `uv run behave` also runs the example's other rules,
 whose step code is not written yet, so it ends with failed and errored scenarios: that is expected here.
 
-What you should see, at the end:
+What you should see, at the end: the example under `Errored scenarios`, `undefined` in the `steps` line, and one
+snippet for each undefined step. One run's output, for example:
 
 ```text
 Errored scenarios:
@@ -74,7 +75,6 @@ Errored scenarios:
 0 rules passed, 0 failed, 1 error, 5 skipped
 0 scenarios passed, 0 failed, 1 error, 10 skipped
 0 steps passed, 0 failed, 40 skipped, 3 undefined
-Took 0min 0.000s
 
 You can implement step definitions for undefined steps with these snippets:
 
@@ -159,26 +159,27 @@ The `Given` goes in `data_steps.py`, which imports `given`; pasted into `count_s
 uv run behave features/js01_trips_per_zone.feature --name "One request delivered twice"
 ```
 
-What you should see:
+What you should see: the example passed, with no failed and no undefined step. One run's output, for example:
 
 ```text
 1 feature passed, 0 failed, 0 skipped
 1 rule passed, 0 failed, 5 skipped
 1 scenario passed, 0 failed, 10 skipped
 3 steps passed, 0 failed, 40 skipped
-Took 0min 0.000s
 ```
 
 ### A4. Run the other examples that use the same steps
 
-The same three steps serve every example of R010, RF010 and RF020 written with a table, and the two that read a
-simulated data set (`Given the simulated data set SIM01 "rush-hour"` and `… SIM02 "quiet-zone"`):
+The same three steps serve every example of R010, RF010 and RF020 written with a table. The `When` and `Then` you
+wrote also serve the two examples that read a simulated data set; their `Given` (`Given the simulated data set
+SIM01 "rush-hour"` and `… SIM02 "quiet-zone"`) is already in `features/steps/data_steps.py`:
 
 ```bash
 uv run behave --no-snippets --tags=@R010,@RF010,@RF020
 ```
 
-What you should see:
+What you should see: one example under `Errored scenarios`, no failed scenario, and every other example passed. One
+run's output, for example:
 
 ```text
 Errored scenarios:
@@ -188,11 +189,11 @@ Errored scenarios:
 2 rules passed, 0 failed, 1 error, 11 skipped
 5 scenarios passed, 0 failed, 1 error, 17 skipped
 21 steps passed, 0 failed, 64 skipped, 3 undefined
-Took 0min 0.000s
 ```
 
 The one error is R010's first example, "Three requests in one period": its `When the period … ends` and
-`Then within 30 s …` have no step code in this repository. Writing them is the same work as A2, if you want more.
+`Then within 30 s …` have no step code in this repository. Writing them is the same work as A2, which you do with
+your assistant in A5.
 
 ### A5. The rest of R010, with your assistant
 
@@ -265,7 +266,8 @@ against it, then your own.
 uv run python -m sim.generate
 ```
 
-What you should see:
+What you should see: one line for each of SIM01, SIM02 and SIM03, with its events, deliveries and fault records.
+One run's output, for example:
 
 ```text
 SIM01 rush-hour: 2511 events, 2515 deliveries, 6 fault records (late, twice) -> sim/data/SIM01/
@@ -277,7 +279,8 @@ SIM03 double-accept: 60 events, 60 deliveries, 10 fault records (later-first) ->
 uv run python sim/check.py SIM01
 ```
 
-What you should see:
+What you should see: every check line starts with `ok`, and the last two lines are
+`OK: SIM01 follows the simulation standards (0 problems)` and a digest. One run's output, for example:
 
 ```text
 SIM01: sim/data/SIM01/ (models in src/rides/events.py: trip_accepted, trip_completed, trip_requested)
@@ -302,8 +305,16 @@ digest 69f9adeb63e7a6da
 ```
 
 Every `ok` line is one check of the standards; a broken standard prints `PROBLEM` and the lines that break it. Read
-the `recount` table: 841 request lines for 837 requests, because 4 requests are delivered twice. That is the
-`lines` check: 2515 = 2511 - 0 + 4.
+the `recount` table: why does `trip_requested` have more lines than truth events? Find the answer in the fault
+lines, then check that the `lines` line adds up the same way.
+
+<details>
+<summary>Check your answer</summary>
+
+The `twice` line: each of those requests is delivered once more, so `lines` has one extra line for each. The
+`lines` check says the same for all deliveries: lines = truth events − `never` + `twice`.
+
+</details>
 
 ### B2. Run the generator again: the same files
 
@@ -312,7 +323,7 @@ uv run python -m sim.generate
 uv run python sim/check.py SIM01
 ```
 
-What you should see: the same output as B1, with the same digest on the last line, `69f9adeb63e7a6da`. The generator
+What you should see: the same output as B1, with the same digest on the last line as your B1 run. The generator
 uses one seeded random generator, so it writes the same files each time.
 
 ### B3. The Parquet step
@@ -321,7 +332,8 @@ uses one seeded random generator, so it writes the same files each time.
 uv run python sim/check.py SIM01 --parquet
 ```
 
-What you should see, before the `OK` line:
+What you should see, before the `OK` line: a `parquet` line whose row count equals its line count. One run's
+output, for example:
 
 ```text
 ok   parquet: sim/parquet/SIM01/trip-events.parquet 2515 rows = 2515 lines
@@ -341,7 +353,8 @@ uv run python shapes/lakehouse/generate.py
 uv run python sim/check.py SIM01 --root shapes/lakehouse
 ```
 
-What you should see:
+What you should see: the generator's line, then every check line `ok` and the `OK` line. One run's output, for
+example:
 
 ```text
 SIM01 late-batches: 156 readings, 157 deliveries in 7 batch files, 9 fault records -> shapes/lakehouse/data/SIM01/
@@ -369,62 +382,70 @@ This data set has all four fault kinds of the standards. For the other shapes, r
 
 ### B5. Your own SIM01, with your assistant
 
-In a terminal, in your team repo root:
+B5 runs in your team repo, next to this one. Move your terminal there (`cd ../<your team repo>`) and start your
+assistant at its root. Part C runs back in this repository.
 
-1. Copy `docs/simulation-standards.md` from this repository to `docs/` of your team repo, and `sim/check.py` and
-   `sim/query.py` to `sim/`.
-2. Add the two packages. If your team repo has no `pyproject.toml` yet, run `uv init --bare` in its root first;
-   then:
+1. Copy three files from this repository into your team repo: `docs/simulation-standards.md` to `docs/`, and
+   `sim/check.py` and `sim/query.py` to `sim/`. On macOS or Linux, from your team repo root:
+
+   ```bash
+   mkdir -p docs sim
+   cp ../b5-t2-behave-sim/docs/simulation-standards.md docs/
+   cp ../b5-t2-behave-sim/sim/check.py ../b5-t2-behave-sim/sim/query.py sim/
+   ```
+
+2. Add the two packages. If your team repo root has no `pyproject.toml` yet, run `uv init --bare` there first. Then:
 
    ```bash
    uv add duckdb pydantic
    ```
 
-3. Open [`prompts/simulate.md`](prompts/simulate.md), fill in its four lines in angle brackets (your sample, what
-   SIM01 shows, its shape, its faults), and send the prompt to your assistant.
-4. When the assistant says it is done, run the check yourself:
+3. The prompt reads the section Data of your team's `docs/design.md`, from Checkpoint 1. If your team repo has no
+   `docs/design.md`, create it with a heading `## Data` and one line that names your sample file.
+4. Open [`prompts/simulate.md`](prompts/simulate.md). Fill in the four lines that start with `Our sample:`,
+   `SIM01 shows:`, `Its shape:` and `Faults:` (each placeholder in angle brackets on them), and send the prompt to
+   your assistant.
+5. When the assistant says it is done, run the check yourself:
 
    ```bash
    uv run python sim/check.py SIM01
    ```
 
 What you should see: `OK: SIM01 follows the simulation standards (0 problems)` and a digest. Run
-`uv run python sim/generate.py` and `uv run python sim/check.py SIM01` a second time and compare the two digests:
-they should be the same. Then read SIM01's bullet in your `docs/design.md` against the check's
-`recount` table: every count in the bullet should be one the check printed.
+`uv run python sim/generate.py` and `uv run python sim/check.py SIM01` a second time: the two digests should be the
+same. Then compare SIM01's bullet in your `docs/design.md` with the check's output: its event and delivery totals
+with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`). They
+should be equal.
 
 ## Part C: run a scenario on a simulated data set
 
-**Goal.** A scenario that reads a generated folder, with its `Then` value taken from the truth before the run. Then
-you break the system and read the failure. This part uses SIM01 of the rides example and the steps of Part A.
+**Goal.** A scenario that reads a generated folder, with its `Then` values taken from the truth before the run.
+Then you break the system and read the failure. This part uses SIM01 of the rides example. Its scenario reuses your
+A2 `When`; the `Given` that reads a generated folder and the `Then` for several zones are already in
+`features/steps/`.
 
 Back in the tutorial repo root: B5 left your terminal in your team repo, so `cd` back to `b5-t2-behave-sim`.
 
-### C1. The expected value, from the truth
+### C1. The expected values, from the truth
 
 ```bash
-uv run python sim/query.py SIM01 "SELECT pickup_zone_id, count(*) AS trips FROM truth WHERE event_type = 'trip_requested' GROUP BY 1 ORDER BY 1"
+uv run python sim/query.py SIM01 "
+  SELECT pickup_zone_id, count(*) AS trips
+  FROM truth
+  WHERE event_type = 'trip_requested'
+  GROUP BY 1 ORDER BY 1"
 ```
 
-What you should see:
-
-```text
-┌────────────────┬───────┐
-│ pickup_zone_id │ trips │
-│     int64      │ int64 │
-├────────────────┼───────┤
-│             48 │   304 │
-│            161 │   191 │
-│            230 │   342 │
-└────────────────┴───────┘
-```
+You should see a table with one row for each of the zones 48, 161 and 230, and the number of trips requested in
+it. Write the three numbers in your notes: C2 needs them.
 
 These are the trips requested in each zone, each once, from `_truth/events.jsonl`. The system never reads that
 folder.
 
 ### C2. Write the scenario and run it
 
-In your editor, create `features/sim01_by_zone.feature` with:
+In your editor, create `features/sim01_by_zone.feature` with the text below. In its last line, replace `<n48>`,
+`<n161>` and `<n230>` with your three numbers from C1:
 
 ```gherkin
 Feature: Trips requested in each zone, on our simulated hour
@@ -434,24 +455,20 @@ Feature: Trips requested in each zone, on our simulated hour
   Scenario: Every request of SIM01 counted once
     Given the deliveries of SIM01
     When the counts are read at 2026-11-23T10:11:00Z
-    Then zones 48, 161 and 230 show 304, 191 and 342 trips requested between 09:00 and 10:00
+    Then zones 48, 161 and 230 show <n48>, <n161> and <n230> trips requested between 09:00 and 10:00
 ```
 
-`Given the deliveries of SIM01` reads `sim/data/SIM01/trip-events/`, the deliveries in the order received; its step
-is in `features/steps/data_steps.py`. Run it:
+`Given the deliveries of SIM01` reads `sim/data/SIM01/trip-events/`, the deliveries in the order received. Run it:
 
 ```bash
 uv run behave --no-snippets features/sim01_by_zone.feature
 ```
 
-What you should see:
+You should see the scenario passed, with no failed or undefined step.
 
-```text
-1 feature passed, 0 failed, 0 skipped
-1 scenario passed, 0 failed, 0 skipped
-3 steps passed, 0 failed, 0 skipped
-Took 0min 0.019s
-```
+Now make it wrong on purpose: in the last line, change one of your three numbers by one, and run the same command.
+You should see the scenario under `Failing scenarios`, and an `ASSERT FAILED` line that names the zone you changed.
+Put the number back, run it again, and check that it passes.
 
 ### C3. Break it: turn the duplicate check off
 
@@ -492,49 +509,79 @@ too.
 
 ### C4. Find a planted bug
 
-Branch `bug-boundary` has Part A's steps and Part C's scenario, and one wrong character in `src/rides/`. Put your
-changes aside, then switch to it:
+On Monday and Tuesday, do C4 at home. The branch `bug-late` differs from `main` in one line of
+`src/rides/counting.py`. You take only that file from it and find the bug from the failing output, before you read
+the line.
+
+First run the rules that use your steps as they are. Rule R020, late requests, has its step code in
+`features/steps/count_steps.py` already:
 
 ```bash
-git stash -u
-git switch bug-boundary
-uv run behave --no-snippets --tags=@R010,@RF010,@RF020
+uv run behave --no-snippets --tags=@R010,@R020,@RF010,@RF020
 ```
 
-What you should see, among the lines:
+You should see no failed and no errored scenario.
 
-```text
-ASSERT FAILED: zone 161, between 09:05 and 09:10: expected 1 trips requested, the system counted no data
-
-Failing scenarios:
-  features/js01_trips_per_zone.feature:22  A request at the end of a period is in the next period
-
-Errored scenarios:
-  features/js01_trips_per_zone.feature:12  Three requests in one period
-
-0 features passed, 0 failed, 1 error, 4 skipped
-2 rules passed, 0 failed, 1 error, 11 skipped
-4 scenarios passed, 1 failed, 1 error, 18 skipped
-19 steps passed, 1 failed, 68 skipped, 3 undefined
-Took 0min 0.000s
-```
-
-Find the bug from the failure alone: which example fails, what is special about its event time, and which function
-of `src/rides/counting.py` decides the period of a time. `uv run pytest -q` also points at it: read the name of the test that fails. When you have it,
-compare with `main`:
+Put in the planted bug and run the same rules again:
 
 ```bash
-git diff main bug-boundary -- src/
+git restore --source origin/bug-late -- src/rides/counting.py
+uv run behave --no-snippets --tags=@R010,@R020,@RF010,@RF020
 ```
 
-Then come back to your own work:
+You should see some scenarios under `Failing scenarios`, each after its `ASSERT FAILED` line. Find the bug from what
+you see, not from the code that changed:
+
+1. Which rule's examples fail, and which rules pass? In `features/js01_trips_per_zone.feature`, compare the
+   `event_time` and `received_time` columns of a failing example with those of a passing one.
+2. Run one failing example alone, with `--name` and its name in quotes, as in A1.
+3. See what the system counted. In `features/steps/count_steps.py`, add `print(context.counts)` as the first line
+   of the `Then` that failed (`step_stored`, under `zone {zone:d} has …`). Run that example again with
+   `--no-capture` added: behave then shows what the step prints. Which period holds the request: the one of its
+   `event_time`, or the one of its `received_time`?
+4. In `src/rides/counting.py`, find the line that decides which period a request is counted in.
+5. **Predict**, in your notes, before you run it: does your C2 scenario on SIM01 pass or fail with this bug? Use
+   SIM01's late requests, from the truth:
+
+   ```bash
+   uv run python sim/query.py SIM01 "
+     SELECT t.event_id, t.pickup_zone_id,
+            strftime(timezone('UTC', t.event_time), '%H:%M:%S') AS event_utc,
+            strftime(timezone('UTC', d.received_time), '%H:%M:%S') AS received_utc
+     FROM faults f JOIN truth t USING (event_id) JOIN deliveries d USING (event_id)
+     WHERE f.fault = 'late'"
+   ```
+
+   Then run it:
+
+   ```bash
+   uv run behave --no-snippets features/sim01_by_zone.feature
+   ```
+
+When you have your answer, see the one line that differs, then take the bug and your `print` out:
 
 ```bash
-git switch main
-git stash pop
+git diff -- src/
+git restore src/rides/counting.py features/steps/count_steps.py
+git status --short
 ```
 
-The branch `solution` has the code of Part A and the scenario of Part C.
+You should see one changed line in the diff, and `git status --short` lists nothing after the restore.
+
+<details>
+<summary>Check your answer</summary>
+
+The examples of R020 fail; R010, RF010 and RF020 pass. Every R020 example has a request received in a later period
+than its `event_time`; in the examples that pass, each request is received a second after its event, in the same
+period. The printed counts hold the late request under the period of its `received_time`. The bug is in
+`count_requests`: the key of a count is made with `period_start(d["received_time"])` instead of
+`period_start(d["event_time"])`. The C2 scenario still passes: each late request of SIM01 is received in a later
+period of the same hour, and the scenario adds up the whole hour. A `Then` for one 5-minute period that holds a late
+request would catch it.
+
+</details>
+
+The branch `solution` has the step code of Part A and A5, and the scenario of Part C with its numbers.
 
 ## Part D (at home): send it to AWS
 
