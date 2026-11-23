@@ -187,10 +187,10 @@ ends, the system shall store one count of requested trips for each pickup zone t
 ([`docs/requirements.md`](docs/requirements.md)). Its two examples reuse your A2 steps; one of them needs two more, which your assistant
 writes:
 
-| R010 example | Steps it uses |
+| Example of rule R010, in `features/js01_trips_per_zone.feature` | Steps it uses |
 |---|---|
-| A request exactly at the end of a period (09:05:00) | only steps you already have: your A2 steps and the supplied `shows no data` step (it may pass before you ask) |
-| Three requests in one period | your A2 table `Given`, plus two new steps: `When the period between … and … ends` and `Then within … s zone … has … trips requested between … and …` |
+| A request exactly at the end of a period (09:05:00), line 22 | only steps you already have: your A2 steps and the supplied `shows no data` step (it may pass before you ask) |
+| Three requests in one period, line 12 | your A2 table `Given`, plus two new steps: `When the period between … and … ends` and `Then within … s zone … has … trips requested between … and …` |
 
 **Where.** This repository, in a terminal at its root, with your coding assistant started there. The connection to
 the course server is optional: the assistant can write the steps from this repository alone; connected, it can also
