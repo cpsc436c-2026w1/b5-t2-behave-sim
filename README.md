@@ -1,9 +1,9 @@
 # CPSC 436C B5T2: simulation scenarios with behave and simulated data for your project
 
-By the end of this tutorial, you’ll be able to turn a project requirement into a Behave scenario that runs against real project code. 
+By the end of this tutorial, you’ll be able to turn a project requirement into a behave scenario that runs against real project code. 
 We created infra for tests for you, so you are not dealing with AWS, just creating scenarios and simulated data.
 
-You’ll practice on Checkpoint 1 submission for the rides example we seen in the lecture ([EXAMPLE.md](EXAMPLE.md)), then generate a repeatable batch of simulated data for your own project and use its ground truth to decide what result to expect before running a scenario. You’ll also deliberately break things the rides example to verify that we will catch where it fails.
+You’ll practice on Checkpoint 1 submission for the rides example we saw in the lecture ([EXAMPLE.md](EXAMPLE.md)), then generate a repeatable batch of simulated data for your own project and use its ground truth to decide what result to expect before running a scenario. You’ll also deliberately break things in the rides example to verify that we will catch where it fails.
 
 | Part | What you do |
 |---|---|
