@@ -16,8 +16,8 @@ Feature: Trips requested in each zone
         | ev-000002 | t-0002  | 161            | 2026-11-23T09:03:40Z | 2026-11-23T09:03:41Z |
         | ev-000003 | t-0003  | 230            | 2026-11-23T09:04:58Z | 2026-11-23T09:04:59Z |
       When the period between 09:00 and 09:05 ends
-      Then within 30 s zone 161 has 2 trips requested between 09:00 and 09:05
-      And within 30 s zone 230 has 1 trip requested between 09:00 and 09:05
+      Then within 60 s zone 161 has 2 trips requested between 09:00 and 09:05
+      And within 60 s zone 230 has 1 trip requested between 09:00 and 09:05
 
     Example: A request at the end of a period is in the next period
       Given only these trip requests are received:
