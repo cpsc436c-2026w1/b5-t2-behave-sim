@@ -566,7 +566,8 @@ git restore src/rides/counting.py features/steps/count_steps.py
 git status --short
 ```
 
-You should see one changed line in the diff, and `git status --short` lists nothing after the restore.
+You should see one changed line in the diff. After the restore, `git status --short` lists only your
+`features/sim01_by_zone.feature`.
 
 <details>
 <summary>Check your answer</summary>
