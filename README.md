@@ -244,7 +244,8 @@ git switch main
 git restore --source origin/steps-example -- features/steps/
 ```
 
-`git switch main` brings back your A2 commit, without the assistant's changes. `git restore --source` puts our
+The first three lines take the assistant's changes, new files included, to the branch `assistant-try` and commit
+them there. `git switch main` brings back your A2 commit, without the assistant's changes. `git restore --source` puts our
 step code in `features/steps/`: `git status --short` now lists those step files as changed, and the commit after A5
 takes them. Run checks 2 to 4 of `prompts/steps.md` on it. To see what your assistant wrote, compare its branch with
 your A2 commit; then open our `features/steps/count_steps.py` in your editor and compare it with the diff:
@@ -547,11 +548,15 @@ you see, not from the code that changed:
 
 1. Which rule's examples fail, and which rules pass? In `features/js01_trips_per_zone.feature`, compare the
    `event_time` and `received_time` columns of a failing example with those of a passing one (any of each).
-2. Run one failing example alone (any one of them), with `--name` and its name in quotes, as in A1.
+2. Run one failing example alone (any one of them), with its name in the quotes:
+
+   ```bash
+   uv run behave --no-snippets --name "<its name>"
+   ```
 3. See what the system counted. In `features/steps/count_steps.py`, find the `Then` that failed: `def
    step_stored`, under the two decorators `zone {zone:d} has …`. Add `print(context.counts)` as the first line of
    its body, right below the `def` line and indented like the line under it. Run that example again with
-   `--no-capture` added, with the name of your example in the quotes:
+   `--no-capture` added:
 
    ```bash
    uv run behave --no-snippets --no-capture --name "<its name>"
