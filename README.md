@@ -194,6 +194,44 @@ Took 0min 0.000s
 The one error is R010's first example, "Three requests in one period": its `When the period … ends` and
 `Then within 30 s …` have no step code in this repository. Writing them is the same work as A2, if you want more.
 
+### A5. The rest of R010, with your assistant
+
+**Where.** This repository, in a terminal at its root, with your coding assistant open there and the course server
+connected (as in B5T1).
+
+**What.** Ask your assistant for the step code of rule R010. That is the two examples of
+`features/js01_trips_per_zone.feature` under `@R010`, five steps in all. Use the prompt in
+[`prompts/steps.md`](prompts/steps.md). Then run the four checks on that page. Do not take the assistant's word
+that the scenarios pass.
+
+**What you should see**, after check 2:
+
+```text
+1 rule passed, 0 failed, 13 skipped
+2 scenarios passed, 0 failed, 21 skipped
+8 steps passed, 0 failed, 80 skipped
+```
+
+After check 3 (with the boundary bug in):
+
+```text
+Failing scenarios:
+  features/js01_trips_per_zone.feature:22  A request at the end of a period is in the next period
+```
+
+**If your assistant does not get there,** set its version aside, take our step code, and run the checks on it:
+
+```bash
+git stash -u
+git checkout origin/steps-example -- features/steps/
+uv run behave --no-snippets --tags=@R010
+git diff stash@{0} -- features/steps/
+```
+
+`git stash -u` keeps your assistant's version aside, new files included. The last line shows how our step code differs from it.
+
+With these steps in place, A4's command shows `6 scenarios passed, 0 failed`: R010's first example no longer errors.
+
 ## Part B: simulate your own incoming batch
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
