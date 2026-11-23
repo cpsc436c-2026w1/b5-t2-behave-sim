@@ -986,11 +986,34 @@ The branch `solution` has the step code of A2 and A4, and the scenario of Part C
 
 ### Part D: send SIM01 to AWS and read it back
 
-This part needs an AWS lease, and the course's replay recipe. When both are available: replay SIM01's deliveries to
-an S3 prefix of your bucket (and, for a streaming project, to a Kinesis stream) in the order received, read them back
-with Athena or DuckDB, compare the counts with [`sim/check.py`](sim/check.py)'s recount, and delete what you created. The recipe's
-page will have the commands and their costs. Keep the generated data on your laptop until then: Parts A to C need no
-AWS.
+**Goal.** The rides SIM01 you made in B1 arrives in AWS in the order it was received. This part needs your team's
+AWS lease; Parts A to C need no AWS.
+
+The course recipe [`simulated-runs`](https://github.com/cpsc436c-2026w1/recipes/tree/main/simulated-runs) has the
+replayer. Clone it next to this repository and try the replay on your laptop first; it calls no AWS service:
+
+```bash
+git clone https://github.com/cpsc436c-2026w1/recipes ../recipes
+cd ../recipes/simulated-runs
+uv sync
+uv run python sim/replay.py SIM01 --run-id b5t2-try1 \
+  --to local --target replay:discard \
+  --data-dir ../../b5-t2-behave-sim/sim/data
+```
+
+**What you should see:** a last line ending in `2515 sent, 0 failed`: every delivery line of SIM01 was sent, in the
+order received.
+
+<details><summary>Send it to AWS, read it back, clean up</summary>
+
+With your lease's credentials active, follow the recipe's
+[Replay your own SIM01](https://github.com/cpsc436c-2026w1/recipes/tree/main/simulated-runs#replay-your-own-sim01)
+section: the same command with `--to s3 --target <your bucket>` (or `--to kinesis --target <your stream>` for a
+streaming project). Read the objects back with Athena or DuckDB and compare the count with `sim/check.py`'s recount
+of SIM01: they should be equal. Then run the recipe's clean-up as its README says: a plain run lists what it would
+delete, `--yes` deletes. The recipe's README gives the costs.
+
+</details>
 
 ## What to take to your project
 
