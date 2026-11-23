@@ -1,7 +1,7 @@
 # CPSC 436C B5T2: simulation scenarios with behave and simulated data for your project
 
 By the end of this tutorial, you’ll be able to turn a project requirement into a behave scenario that runs against real project code. 
-We created infra for tests for you, so you are not dealing with AWS, just creating scenarios and simulated data.
+Parts A–C run on your laptop. Part D starts locally and uses AWS for the cloud replay.
 
 You’ll test one rule of the rides app from the lecture ([EXAMPLE.md](EXAMPLE.md), its Checkpoint 1 submission):
 count each trip request once, even if it arrives twice. First you’ll check it on three rows you can count by hand.
@@ -1018,7 +1018,7 @@ uv run python sim/replay.py SIM01 --run-id b5t2-try1 \
   --data-dir ../../b5-t2-behave-sim/sim/data
 ```
 
-**What you should see:** a last line ending in `2515 sent, 0 failed`: every delivery line of SIM01 was sent, in the
+**What you should see:** a summary line containing `2515 sent, 0 failed`: every delivery line of SIM01 was sent, in the
 order received.
 
 <details><summary>Send it to AWS, read it back, clean up</summary>
