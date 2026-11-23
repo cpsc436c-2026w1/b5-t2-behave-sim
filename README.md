@@ -231,6 +231,9 @@ What you should see, check by check:
 4. With the boundary bug in, `A request at the end of a period is in the next period` is under
    `Failing scenarios`; after `git restore`, `git status --short` lists no file in `src/`.
 
+Then read each `Then` step it wrote, as the end of `prompts/steps.md` says: the expected number comes from the line
+of the feature, the actual number from our code.
+
 **If your assistant fails a check or refuses,** keep its attempt on a branch of its own, then take our step code:
 
 ```bash
