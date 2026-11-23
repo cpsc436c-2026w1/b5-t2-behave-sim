@@ -3,7 +3,7 @@ from datetime import timedelta
 
 from behave import then, when
 
-from rides.counting import NO_DATA, count_requests, dedupe_is_on, parse, show
+from rides.counting import NO_DATA, PERIOD, count_requests, dedupe_is_on, parse, show
 
 DAY = "2026-11-23T"
 
@@ -23,6 +23,17 @@ def switch_note() -> str:
     return "" if dedupe_is_on() else " (DEDUPE=off: the duplicate check is off)"
 
 
+def count_between(counts, zone, start: str, end: str):
+    """What the system shows for the zone over the periods from start up to end: show() for each 5-minute period,
+    added up, or no data if every period shows no data."""
+    shown, t = [], parse(start)
+    while t < parse(end):
+        shown.append(show(counts, zone, t.strftime("%Y-%m-%dT%H:%M:%SZ")))
+        t += PERIOD
+    numbers = [n for n in shown if n != NO_DATA]
+    return sum(numbers) if numbers else NO_DATA
+
+
 @when("the counts are read at {time}")
 def step_read(context, time):
     context.counts = count_requests(context.deliveries, read_at=time)
@@ -37,7 +48,7 @@ def step_period_ends(context, start, end):
 @then("zone {zone:d} shows {expected:d} trip requested between {start} and {end}")
 @then("zone {zone:d} shows {expected:d} trips requested between {start} and {end}")
 def step_count(context, zone, expected, start, end):
-    actual = show(context.counts, zone, start_of(start))
+    actual = count_between(context.counts, zone, start_of(start), start_of(end))
     assert actual == expected, (f"{label(zone, start_of(start))}: expected {expected} trips requested, "
                                 f"the system counted {actual}{switch_note()}")
 
@@ -57,7 +68,7 @@ def step_count_within(context, seconds, zone, expected, start, end):
 
 @then("zone {zone:d} shows no data between {start} and {end}")
 def step_no_data(context, zone, start, end):
-    actual = show(context.counts, zone, start_of(start))
+    actual = count_between(context.counts, zone, start_of(start), start_of(end))
     assert actual == NO_DATA, f"{label(zone, start_of(start))}: expected no data, the system shows {actual}"
 
 
@@ -70,7 +81,7 @@ def step_time_is(context, time):
 @then("zone {zone:d} has {expected:d} trip requested between {start} and {end}")
 @then("zone {zone:d} has {expected:d} trips requested between {start} and {end}")
 def step_stored(context, zone, expected, start, end):
-    actual = show(context.counts, zone, start_of(start))
+    actual = count_between(context.counts, zone, start_of(start), start_of(end))
     assert actual == expected, (f"{label(zone, start_of(start))}: expected {expected} trips stored, "
                                 f"the system has {actual}{switch_note()}")
 
