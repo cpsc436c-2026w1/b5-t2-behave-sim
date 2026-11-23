@@ -542,7 +542,7 @@ file a night) from one requirement to the expected result of its scenario. Run
 `uv run python shapes/lakehouse/generate.py` first, unless you ran the lakehouse shape in B4.
 
 1. **Requirement**, written as in Checkpoint 1 (the IDs are the weather team's, not the rides example's):
-   **R030** WHEN a batch file sends a reading that an earlier batch file already sent THE SYSTEM SHALL store the
+   **R110** WHEN a batch file sends a reading that an earlier batch file already sent THE SYSTEM SHALL store the
    reading once.
 2. **Sample**: `shapes/lakehouse/sample/ghcn_daily_sample.csv`. One row is one weather station's reading of one
    element (TMAX, TMIN or PRCP) for one day.
@@ -580,7 +580,7 @@ file a night) from one requirement to the expected result of its scenario. Run
    | Line | Filled in |
    |---|---|
    | `Our sample:` | `shapes/lakehouse/sample/ghcn_daily_sample.csv`. It is one weather station's reading of one element (TMAX, TMIN or PRCP) for one day. |
-   | `SIM01 shows:` | R030: a reading that a later batch file sends again is stored once. |
+   | `SIM01 shows:` | R110: a reading that a later batch file sends again is stored once. |
    | `Its shape:` | a batch of files for each day (lakehouse) |
    | `Faults:` | 3 twice |
 
