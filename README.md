@@ -225,7 +225,7 @@ pass.
 What you should see, check by check:
 
 1. `git status --short` lists only files in `features/steps/` and, if the assistant changed it,
-   `features/environment.py`.
+   `features/environment.py` (that file is already in this repository).
 2. The dry run's last lines have `untested` and no `undefined`.
 3. Both R010 scenarios pass, none fail.
 4. With the boundary bug in, `A request at the end of a period is in the next period` is under
