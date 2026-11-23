@@ -3,7 +3,11 @@
 By the end of this tutorial, you’ll be able to turn a project requirement into a behave scenario that runs against real project code. 
 We created infra for tests for you, so you are not dealing with AWS, just creating scenarios and simulated data.
 
-You’ll practice on Checkpoint 1 submission for the rides example we saw in the lecture ([EXAMPLE.md](EXAMPLE.md)), then generate a repeatable batch of simulated data for your own project and use its ground truth to decide what result to expect before running a scenario. You’ll also deliberately break things in the rides example to verify that we will catch where it fails.
+You’ll test one rule of the rides app from the lecture ([EXAMPLE.md](EXAMPLE.md), its Checkpoint 1 submission):
+count each trip request once, even if it arrives twice. First you’ll check it on three rows you can count by hand.
+Then you’ll run it on a simulated hour of deliveries, with the expected counts taken from the data's ground truth
+before the run. Finally, you’ll turn off duplicate checking and see your test catch the wrong count. After the
+section, you use the same steps to generate a repeatable batch of simulated data for your own project.
 
 | Part | What you do |
 |---|---|
