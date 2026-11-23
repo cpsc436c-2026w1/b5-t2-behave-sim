@@ -46,7 +46,7 @@ def count_requests(deliveries: list[dict], read_at: str | None = None, dedupe: b
             if d["event_id"] in seen:          # the same id again is the same event
                 continue
             seen.add(d["event_id"])
-        key = (int(d["pickup_zone_id"]), period_start(d["event_time"]))
+        key = (int(d["pickup_zone_id"]), period_start(d["received_time"]))
         counts[key] = counts.get(key, 0) + 1
     return counts
 
