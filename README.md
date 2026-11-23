@@ -58,6 +58,8 @@ Every command below runs in the root of this repository, unless a step says your
 RF010 says: "the system shall count every trip request exactly once, even when the stream delivers its event
 twice". behave runs an example by matching each of its lines to a step function, in Python, in
 [`features/steps/`](features/steps/). Three of those functions are missing from this repository: you write them.
+In this example, `Given` loads three rows, `When` runs the counting code, and `Then` checks that it counted two
+trips: one request appears twice, with the same `event_id`.
 
 #### A1. Run the example: three steps are missing
 
@@ -349,8 +351,8 @@ Then commit the step code, as in "After A4" above.
 ### Part B: simulate an incoming batch and check it
 
 - **Deliveries**: what the system receives, in the order it arrives, repeats and late arrivals included.
-- **Truth** (`_truth/`): each event once, as it happened, and the faults the generator injected. The expected
-  answers are computed from the truth; the system never reads it.
+- **Truth** (`_truth/`): the generator's answer key: each event once, as it happened, and the faults it injected.
+  You compute the expected result from the truth before you run anything; the system never reads it.
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
 event models, and the truth says what happened, so that a `Then` can state its value before the run. In the section
@@ -918,7 +920,9 @@ uv run behave --no-snippets --tags=@R010,@R020,@RF010,@RF020
 What you should see: some scenarios under `Failing scenarios`, each after its `ASSERT FAILED` line. Find the bug
 from what you see, not from the code that changed:
 
-1. Which rule's examples fail, and which rules pass? In
+1. Every request has two times: `event_time`, when it happened, and `received_time`, when it reached the system. A
+   request that happened at 09:04 and arrived at 09:11 is not seen by a read at 09:10; once it arrives, it belongs
+   to the 09:00–09:05 period. Which rule's examples fail, and which rules pass? In
    [`features/js01_trips_per_zone.feature`](features/js01_trips_per_zone.feature), compare the `event_time` and
    `received_time` columns of a failing example with those of a passing one (any of each).
 2. Run one failing example alone (any one of them), with its name in the quotes:
@@ -941,7 +945,8 @@ from what you see, not from the code that changed:
 4. In `src/rides/counting.py`, read `count_requests` and find the line that decides which period a request is
    counted in.
 5. Run the query below, then **predict**, in your notes, before you run the scenario: does your C2 scenario on
-   SIM01 pass or fail with this bug? Decide from the times of SIM01's late requests, in the truth:
+   SIM01 pass or fail with this bug? Ask yourself: if a request moves from one 5-minute period to another within the
+   same hour, does the hour's total change? Decide from the times of SIM01's late requests, in the truth:
 
    ```bash
    uv run python sim/query.py SIM01 "
