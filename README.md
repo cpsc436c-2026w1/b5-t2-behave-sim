@@ -508,8 +508,8 @@ uv run python shapes/lakehouse/generate.py
 uv run python sim/check.py SIM01 --root shapes/lakehouse
 ```
 
-What you should see: the generator's line, then every check line `ok` and the `OK` line. One run's output, for
-example:
+What you should see, for any shape: the generator's line, then every check line `ok` and the `OK` line. One run's
+output for the lakehouse shape, for example:
 
 ```text
 SIM01 late-batches: 156 readings, 157 deliveries in 7 batch files, 9 fault records -> shapes/lakehouse/data/SIM01/
@@ -573,7 +573,7 @@ file a night) from one requirement to the expected result of its scenario. Run
    ```
 
    This repository has no lakehouse system and no step code for these lines, so you do not run this scenario here.
-   In a team repo, it runs like C2.
+   In a team repo, it runs like C2, with the three steps that "What to take to your project" describes.
 6. **The four lines of the prompt** (`prompts/simulate.md`), filled in for this example:
 
    | Line | Filled in |
@@ -583,7 +583,8 @@ file a night) from one requirement to the expected result of its scenario. Run
    | `Its shape:` | a batch of files for each day (lakehouse) |
    | `Faults:` | 3 twice |
 
-For your project, do the same with one of your Checkpoint 1 requirements.
+For your project, do the same with one of your Checkpoint 1 requirements. If your data set has more than one event
+type, add `AND t.event_type = '<your type>'` to the `WHERE` line of the query of item 4.
 
 **Then SIM01 for your project, in your team repo.** The rest of B5 runs in your team repo, next to this one. Move your terminal
 there (`cd ../<your team repo>`) and start your assistant at its root. C4 runs back in this repository.
@@ -633,16 +634,19 @@ same. Then compare SIM01's bullet in your `docs/design.md` with the check's outp
 with the `recount` table, and its fault counts with the fault lines (`twice`, `never`, `late`, `changed`). They
 should be equal.
 
-The new files belong to your team repo. Commit them there, from its root:
+The new files belong to your team repo. Commit them there, from its root. The first line keeps Python's cache
+folders out of the commit (on Windows, add the lines `__pycache__/` and `.venv/` to `.gitignore` in your editor
+instead):
 
 ```bash
+printf '__pycache__/\n.venv/\n' >> .gitignore
 git status --short
 git add -A
 git commit -m "SIM01 generator and check"
 ```
 
-`git status --short` lists the three files you copied, `pyproject.toml` and `uv.lock` if they are new, and the
-assistant's files in `src/`, `sim/` and `docs/`. If your team works on branches with pull requests, run
+`git status --short` lists `.gitignore`, the three files you copied, `pyproject.toml` and `uv.lock` if they are
+new, and the assistant's files in `src/`, `sim/` and `docs/`. If your team works on branches with pull requests, run
 `git switch -c sim01` before `git add`, then push the branch and open a pull request.
 
 If the check stops with `FAILED: expected one src/<package>/events.py, found 2` (or a larger number), your team repo
@@ -698,8 +702,8 @@ you see, not from the code that changed:
    `event_time`, or the one of its `received_time`?
 4. In `src/rides/counting.py`, read `count_requests` and find the line that decides which period a request is
    counted in.
-5. **Predict**, in your notes, before you run it: does your C2 scenario on SIM01 pass or fail with this bug? Decide
-   from the times of SIM01's late requests, in the truth:
+5. **Predict**, in your notes, after the query and before you run the scenario: does your C2 scenario on SIM01
+   pass or fail with this bug? Decide from the times of SIM01's late requests, in the truth:
 
    ```bash
    uv run python sim/query.py SIM01 "
