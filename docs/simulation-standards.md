@@ -53,7 +53,8 @@ Rides: `sim/data/SIM01/trip-events/dt=2026-11-23/hour=09/deliveries.jsonl` and t
 
 Name each data set (SIM01 …) and give it a bullet in `docs/design.md`, section Data: the sample it is made from, the
 seed, the size, the time window, and the faults by kind and count. The four kinds of fault, each a line in
-`_truth/faults.jsonl` with the `event_id` it is about:
+`_truth/faults.jsonl` with its kind in the field `fault` and the `event_id` it is about (rides SIM01:
+`{"fault": "twice", "event_id": "ev-000358"}`):
 
 | Kind | What happens | What `sim/check.py` recounts |
 |---|---|---|
