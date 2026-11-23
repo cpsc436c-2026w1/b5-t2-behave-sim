@@ -23,9 +23,9 @@ def test_rush_hour_counts_and_faults():
     g.generate("SIM01")
     data = g.load("SIM01")
     assert len(data["events"]) == 2511 and len(data["deliveries"]) == 2515
-    assert Counter(f["fault"] for f in data["faults"]) == {"duplicate": 4, "late": 2}
+    assert Counter(f["fault"] for f in data["faults"]) == {"twice": 4, "late": 2}
     ids = Counter(d["event_id"] for d in data["deliveries"])
-    assert sorted(i for i, n in ids.items() if n == 2) == sorted(f["event_id"] for f in data["faults"] if f["fault"] == "duplicate")
+    assert sorted(i for i, n in ids.items() if n == 2) == sorted(f["event_id"] for f in data["faults"] if f["fault"] == "twice")
     late = {f["event_id"] for f in data["faults"] if f["fault"] == "late"}
     for d in data["deliveries"]:
         delay = (g.datetime.fromisoformat(d["received_time"][:-1]) - g.datetime.fromisoformat(d["event_time"][:-1])).seconds

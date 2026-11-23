@@ -14,9 +14,15 @@ def parse(time: str) -> datetime:
 
 
 def period_start(event_time: str) -> str:
-    """Start of the 5-minute period that holds the time: 09:13:40 is in the period between 09:10 and 09:15."""
+    """Start of the 5-minute period that holds the time: 09:13:40 is in the period between 09:10 and 09:15.
+
+    A period holds the times from its start up to, and not including, its end: 09:15:00 is in the next period.
+    """
     t = parse(event_time)
-    return t.replace(minute=t.minute - t.minute % 5, second=0).strftime("%Y-%m-%dT%H:%M:%SZ")
+    start = t.replace(minute=0, second=0, microsecond=0)
+    while not (start <= t < start + PERIOD):
+        start += PERIOD
+    return start.strftime("%Y-%m-%dT%H:%M:%SZ")
 
 
 def dedupe_is_on() -> bool:

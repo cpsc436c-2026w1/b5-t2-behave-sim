@@ -14,12 +14,15 @@ import csv
 import json
 import random
 import shutil
+import sys
 from datetime import datetime, timedelta
 from pathlib import Path
 
 from sim.datasets import DATA_SETS, SEED, SEED_ROWS, SEED_START, SIM_START
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "src"))
+
 OUT = ROOT / "sim" / "data"
 
 
@@ -83,7 +86,7 @@ def stream(sim_id: str) -> tuple[list[dict], list[dict], list[dict]]:
     picked = rng.sample(requests, cfg.get("duplicates", 0) + cfg.get("late", 0))
     for d in picked[:cfg.get("duplicates", 0)]:                     # the same event a second time
         deliveries.append(deliver(d, d["received_time"] + timedelta(seconds=rng.randint(2, 30))))
-        faults.append(dict(fault="duplicate", event_id=d["event_id"]))
+        faults.append(dict(fault="twice", event_id=d["event_id"]))
     for d in picked[cfg.get("duplicates", 0):]:                     # received minutes after it happened
         low, high = cfg["late_minutes"]
         d["received_time"] = d["event_time"] + timedelta(seconds=rng.randint(low * 60, high * 60))
@@ -127,6 +130,9 @@ def write(sim_id: str, events: list[dict], deliveries: list[dict], faults: list[
         received = d["received_time"]
         path = folder / "trip-events" / f"dt={received:%Y-%m-%d}" / f"hour={received:%H}" / "deliveries.jsonl"
         by_hour.setdefault(path, []).append(d)
+    from rides.events import validate        # here, not at the top: `uvx behave --dry-run` runs without pydantic
+    for line in events + deliveries:                                # every event matches its model (src/rides/events.py)
+        validate(json.loads(json.dumps({k: v for k, v in line.items() if k != "received_time"}, default=iso)))
     files = {**by_hour, folder / "_truth" / "events.jsonl": events, folder / "_truth" / "faults.jsonl": faults}
     for path, lines in files.items():
         path.parent.mkdir(parents=True, exist_ok=True)

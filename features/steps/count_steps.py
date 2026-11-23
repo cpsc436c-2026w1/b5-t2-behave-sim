@@ -21,17 +21,9 @@ def switch_note() -> str:
     return "" if dedupe_is_on() else " (DEDUPE=off: the duplicate check is off)"
 
 
-@when("the counts are read at {time}")
-def step_read(context, time):
-    context.counts = count_requests(context.deliveries, read_at=time)
-
-
-@then("zone {zone:d} shows {expected:d} trip requested between {start} and {end}")
-@then("zone {zone:d} shows {expected:d} trips requested between {start} and {end}")
-def step_count(context, zone, expected, start, end):
-    actual = show(context.counts, zone, start_of(start))
-    assert actual == expected, (f"{label(zone, start_of(start))}: expected {expected} trips requested, "
-                                f"the system counted {actual}{switch_note()}")
+# B5T2 Part A: write the steps "the counts are read at {time}" (a When: count the deliveries received up to that
+# time with count_requests) and "zone {zone:d} shows {expected:d} trips requested between {start} and {end}" (a Then:
+# compare show(...) for that zone and period with the expected number) here.
 
 
 @then("zone {zone:d} shows no data between {start} and {end}")

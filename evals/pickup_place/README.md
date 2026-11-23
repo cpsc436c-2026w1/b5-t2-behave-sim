@@ -45,7 +45,7 @@ pickup place correct in 26 of 30 runs (accuracy 0.87)
 ## Feature on the recorded replies (checker only, recorded replies)
 
 ```
-$ uvx behave@1.3.3 features/js04_pickup_place.feature
+$ uv run behave features/js04_pickup_place.feature
 USING RUNNER: behave.runner:Runner
 @JS04 @assistant
 Feature: Pickup place of a rider's message # features/js04_pickup_place.feature:2
@@ -111,7 +111,7 @@ Case 6's three replies changed to `{"pickup_place": "LGA Terminal B"}` (a name t
 back:
 
 ```
-$ uvx behave@1.3.3 --tags=@R110 features/js04_pickup_place.feature        # from the gate on
+$ uv run behave --tags=@R110 features/js04_pickup_place.feature        # from the gate on
       Then the pickup place is correct in at least 24 of the 30 runs # features/steps/pickup_steps.py:88
       ASSERT FAILED: correct in 23 of 30 runs, at least 24 needed
       case  reference                 correct  wrong runs
@@ -141,7 +141,7 @@ Failing scenarios:
 The threshold in the feature changed to 27, then put back:
 
 ```
-$ uvx behave@1.3.3 --tags=@R110 features/js04_pickup_place.feature        # from the gate on
+$ uv run behave --tags=@R110 features/js04_pickup_place.feature        # from the gate on
       Then the pickup place is correct in at least 27 of the 30 runs # features/steps/pickup_steps.py:88
       ASSERT FAILED: correct in 26 of 30 runs, at least 27 needed
       case  reference                 correct  wrong runs
@@ -171,11 +171,14 @@ Failing scenarios:
 `REPLIES=live` stops without a call:
 
 ```
-$ REPLIES=live uvx behave@1.3.3 features/js04_pickup_place.feature
+$ REPLIES=live uv run behave features/js04_pickup_place.feature
       NotImplementedError: REPLIES=live: the call through the course LLM gateway is not written yet
 ```
 
 ## Checks of the whole repository
+
+Pasted from cp1-example on 2026-11-20. In the B5T2 tutorial repository the counts differ: its `main` has more
+undefined steps (three are left for Part A) and more tests (47).
 
 ```
 $ uvx behave@1.3.3 --dry-run --no-snippets              # last lines: the error and the 31 undefined steps are draft rules (as on main)

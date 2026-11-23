@@ -19,6 +19,14 @@ Feature: Trips requested in each zone
       Then within 30 s zone 161 has 2 trips requested between 09:00 and 09:05
       And within 30 s zone 230 has 1 trip requested between 09:00 and 09:05
 
+    Example: A request at the end of a period is in the next period
+      Given only these trip requests are received:
+        | event_id  | trip_id | pickup_zone_id | event_time           | received_time        |
+        | ev-000004 | t-0004  | 161            | 2026-11-23T09:05:00Z | 2026-11-23T09:05:01Z |
+      When the counts are read at 2026-11-23T09:10:30Z
+      Then zone 161 shows 1 trip requested between 09:05 and 09:10
+      And zone 161 shows no data between 09:00 and 09:05
+
   @R020
   Rule: If a request is received after its period ended, it is added to the stored count of the period of its event time
 

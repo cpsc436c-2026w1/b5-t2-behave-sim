@@ -1,0 +1,21 @@
+work_id,title,publication_year,type,authors,cited_by_count
+https://openalex.org/W4401454060,Efficient Data Structures and Algorithms for Cloud Computing Platforms,2024,conference-paper,1,137
+https://openalex.org/W4391741549,Cloud-Native Computing: A Survey From the Perspective of Services,2024,article,9,131
+https://openalex.org/W4401934230,Auto-Scaling Techniques in Cloud Computing: Issues and Research Directions,2024,article,4,121
+https://openalex.org/W4404585306,Big data processing using hybrid Gaussian mixture model with salp swarm algorithm,2024,article,6,104
+https://openalex.org/W4395106452,Characterizing Power Management Opportunities for LLMs in the Cloud,2024,conference-paper,7,93
+https://openalex.org/W4394923323,On the Limitations of Carbon-Aware Temporal and Spatial Workload Shifting in the Cloud,2024,conference-paper,5,88
+https://openalex.org/W4394998727,SpotServe: Serving Generative Large Language Models on Preemptible Instances,2024,conference-paper,7,85
+https://openalex.org/W4391916554,"A survey on the scheduling mechanisms in serverless computing: a taxonomy, challenges, and trends",2024,article,3,79
+https://openalex.org/W4394871711,RainbowCake: Mitigating Cold-starts in Serverless with Layer-wise Container Caching and Sharing,2024,conference-paper,8,75
+https://openalex.org/W4394855582,Dynamic resource allocation for virtual machine migration optimization using machine learning,2024,article,6,74
+https://openalex.org/W4399610297,Auto-scaling mechanisms in serverless computing: A comprehensive review,2024,article,4,72
+https://openalex.org/W4402734816,Review of energy efficiency and technological advancements in data center power systems,2024,article,6,72
+https://openalex.org/W4391547660,Autoscaling Solutions for Cloud Applications Under Dynamic Workloads,2024,article,5,71
+https://openalex.org/W4402096237,Assessing the transformative impact of cloud computing on software deployment and management,2024,article,6,69
+https://openalex.org/W4401176820,Crux: GPU-Efficient Communication Scheduling for Deep Learning Training,2024,conference-paper,9,68
+https://openalex.org/W4391770593,Sustainable computing across datacenters: A review of enabling models and techniques,2024,article,8,67
+https://openalex.org/W4392882236,"Cold start latency mitigation mechanisms in serverless computing: Taxonomy, review, and future directions",2024,article,3,65
+https://openalex.org/W4398225123,MAO: An Efficient Resource Utilization of Task Scheduling in Cloud Fog Environment,2024,conference-paper,5,65
+https://openalex.org/W4394620738,Rock-hyrax: An energy efficient job scheduling using cluster of resources in cloud computing environment,2024,article,5,63
+https://openalex.org/W4407938775,BOA: Optimizing Energy Usage in Cloud-Fog Environment Using Meta-Heuristic Scheduling Algorithm,2024,conference-paper,6,62

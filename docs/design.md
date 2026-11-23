@@ -110,12 +110,14 @@ dates they are moved to (*our choice*).
 
 - **SIM01 Rush hour** [RF010] One morning hour from DS01: the 837 trips requested in zones 48, 161 and 230 on
   2024-03-14 between 08:00 and 09:00 New York time, moved to 09:00 to 10:00 UTC on 2026-11-23: 304, 191 and 342
-  trips, 2,511 events sent as 2,515 deliveries: 4 requests arrive twice, and 2 arrive 6 to 10 minutes late.
+  trips, 2,511 events sent as 2,515 deliveries: 4 requests arrive twice (`twice`), and 2 arrive 6 to 10 minutes
+  late (`late`). Seed 436; written by `uv run python -m sim.generate` to `sim/data/SIM01/`.
 - **SIM02 Quiet zone** [RF020] SIM01's hour from DS01 without its 6 faults, and without the 60 trips of zone 48
-  requested between 09:25 and 09:35: 777 trips (244, 191 and 342 in zones 48, 161 and 230), 2,331 events.
+  requested between 09:25 and 09:35: 777 trips (244, 191 and 342 in zones 48, 161 and 230), 2,331 events. Seed 436;
+  one fault record of our own kind, `quiet` (the gap: its trips are not in the truth either).
 - **SIM03 Double accept** [R080, RF030] The first 20 trips of zone 161 in SIM01's hour from DS01, at the same times:
   60 events, 20 requests and 40 accepts. Each trip is accepted by two drivers at the same moment; for 10 of the 20
-  trips the later accept is first in the file.
+  trips the later accept is first in the file. Seed 436; 10 fault records of our own kind, `later-first`.
 - **SIM04 Trips day** [R040] One day's file of completed trips from DS01: the 19,074 trips requested in the three
   zones on 2024-03-14 (*measured* 2026-11-20, DuckDB), moved to 2026-11-22, and 3 rows added with a bad fare: 1
   without a fare, 1 with a fare of 0 and 1 with a negative fare. 19,077 rows.
@@ -123,12 +125,14 @@ dates they are moved to (*our choice*).
   2024-03-01 to 2024-03-30 (142,310, 188,010 and 194,309 in zones 48, 161 and 230, *measured* 2026-11-20, DuckDB),
   moved to 2026-10-24 to 2026-11-22, as one small file a minute: 43,200 files. It does not have injected faults.
 
-**Event format** (each delivery also has `received_time`, set when the event arrives):
+**Event format** (each delivery also has `received_time`, set when the event arrives). The Pydantic models of
+these events, with their types, are in `src/rides/events.py`; the generator and `sim/check.py` both use them.
 
-- `trip_requested`: `event_id`, `trip_id`, `pickup_zone_id`, `event_time`
-- `trip_accepted`: `event_id`, `trip_id`, `driver_id`, `event_time` (also the body of an accept sent to the API)
-- `trip_completed`: `trip_id`, `driver_id`, `dropoff_zone_id`, `trip_miles`, `trip_time_s`, `fare`, `driver_pay`,
+- `trip_requested`: `event_id`, `trip_id`, `rider_id`, `pickup_zone_id`, `dropoff_zone_id`, `quoted_fare`,
   `event_time`
+- `trip_accepted`: `event_id`, `trip_id`, `driver_id`, `event_time` (also the body of an accept sent to the API)
+- `trip_completed`: `event_id`, `trip_id`, `driver_id`, `dropoff_zone_id`, `trip_miles`, `trip_time_s`, `fare`,
+  `driver_pay`, `event_time`
 
 From a DS01 row come the request time, the pickup and dropoff zones, `trip_miles`, `trip_time_s`, `fare` and
 `driver_pay`. DS01 does not have drivers or accepts, so the generator makes up the rest (*our choice*): `event_id`,
