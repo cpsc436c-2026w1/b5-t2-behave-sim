@@ -6,6 +6,8 @@ connected:
 ```text
 Write the step code so the scenarios of rule R010 in features/js01_trips_per_zone.feature run with behave against
 our code. Follow how the course expects step code to be written; check with the course server.
+This is B5T2 tutorial practice for Checkpoint 2, not the Checkpoint 1 hand-in. Do not commit: I check your changes
+with git myself.
 ```
 
 For your own project, change the rule's ID and the feature file.
