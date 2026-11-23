@@ -23,8 +23,7 @@ added.
 | [`shapes/`](shapes/README.md) | worked examples of Part B for three project shapes: lakehouse, operational, generative AI |
 | `features/`, `src/rides/`, `sim/generate.py` | the rides example: features, local code, the generator of SIM01 to SIM03 |
 
-Each step says where you do it, on the line under its heading: **in the section**, or **at home (Monday and Tuesday
-sections)**. In the Thursday section, your TA says which of the at-home steps you also do in the section. Every
+Each step says where you do it, on the line under its heading: **in the section**, or **at home**. Every
 in-section step needs only the in-section steps before it.
 
 ## Before the tutorial
@@ -191,7 +190,7 @@ What you should see: the example passed, with no failed and no undefined step. O
 
 ### A4. Run the other examples that use the same steps
 
-*At home (Monday and Tuesday sections).* In the Monday and Tuesday sections, go on to A5 now.
+*At home.* In the section, go on to [A5](#a5-the-rest-of-r010-with-your-assistant) now.
 
 The same three steps serve every example of R010, RF010 and RF020 written with a table. The `When` and `Then` you
 wrote also serve the two examples that read a simulated data set; their `Given` (`Given the simulated data set
@@ -201,8 +200,8 @@ SIM01 "rush-hour"` and `… SIM02 "quiet-zone"`) is already in `features/steps/d
 uv run behave --no-snippets --tags=@R010,@RF010,@RF020
 ```
 
-What you should see depends on whether you have done A5 yet. After A5 (in the Monday and Tuesday sections, A5 comes
-first): no failed and no errored scenario, every example passed. Before A5: one example under `Errored scenarios`,
+What you should see depends on whether you have done A5 yet. After A5 (done in the section, so before A4 at
+home): no failed and no errored scenario, every example passed. Before A5: one example under `Errored scenarios`,
 no failed scenario, and every other example passed. One run's output before A5, for example:
 
 ```text
@@ -370,8 +369,7 @@ uses one seeded random generator, so it writes the same files each time.
 
 ### B3. The Parquet step
 
-*At home (Monday and Tuesday sections).* In the Monday and Tuesday sections, B3, B4 and B5 are at home: go on to
-[C1](#c1-the-expected-values-from-the-truth) now.
+*At home.* B3, B4 and B5 are at home: in the section, go on to [C1](#c1-the-expected-values-from-the-truth) now.
 
 ```bash
 uv run python sim/check.py SIM01 --parquet
@@ -389,7 +387,7 @@ JSON Lines stay as they are: Parquet is a separate step.
 
 ### B4. One shape near your project
 
-*At home (Monday and Tuesday sections).*
+*At home.*
 
 Take the shape folder whose README you skimmed before the tutorial ([`shapes/`](shapes/README.md)): `lakehouse` (a
 batch of files for each day), `operational` (a stream of events with arrival times) or `genai` (questions with their
@@ -429,8 +427,8 @@ This data set has all four fault kinds of the standards. For the other shapes, r
 
 ### B5. Your own SIM01, with your assistant
 
-*At home (Monday and Tuesday sections).* In the Monday and Tuesday sections, do not move to your team repo: stay
-in this tutorial repo and go on to [C1](#c1-the-expected-values-from-the-truth).
+*At home.* In the section, do not move to your team repo: stay in this tutorial repo and go on to
+[C1](#c1-the-expected-values-from-the-truth).
 
 B5 runs in your team repo, next to this one. Move your terminal there (`cd ../<your team repo>`) and start your
 assistant at its root. Part C runs back in this repository.
@@ -485,8 +483,8 @@ Then you break the system and read the failure. This part uses SIM01 of the ride
 A2 `When`; the `Given` that reads a generated folder and the `Then` for several zones are already in
 `features/steps/`.
 
-Part C runs in the tutorial repo root. In the Monday and Tuesday sections your terminal is still there. If you did
-B5 first, your terminal is in your team repo: run `cd ../b5-t2-behave-sim`.
+Part C runs in the tutorial repo root. In the section your terminal is still there. If you did B5 first, at home,
+your terminal is in your team repo: run `cd ../b5-t2-behave-sim`.
 
 ### C1. The expected values, from the truth
 
@@ -576,11 +574,11 @@ too.
 
 </details>
 
-In the Monday and Tuesday sections, C3 is the last step of the section: A4, B3, B4, B5 and C4 are at home.
+C3 is the last step of the section: A4, B3, B4, B5, C4 and Part D are at home.
 
 ### C4. Find a planted bug
 
-*At home (Monday and Tuesday sections).*
+*At home.*
 
 C4 runs in the tutorial repo root: if you did B5 just before, run `cd ../b5-t2-behave-sim` first. The branch
 `bug-late` differs from `main` in one line of
