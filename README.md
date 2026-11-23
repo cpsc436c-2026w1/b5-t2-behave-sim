@@ -528,7 +528,8 @@ You should see the scenario passed, with no failed or undefined step.
 
 Now make it wrong on purpose: in the last line, change one of your three numbers (any one) by one, and run the same command.
 You should see the scenario under `Failing scenarios`, and an `ASSERT FAILED` line that names the zone you changed.
-Put the number back, run it again, and check that it passes.
+Put the number back, run it again, and check that it passes. Leave the new feature file as it is, not committed:
+C3 and C4 run it, and `git status --short` lists it as `??`, which is expected.
 
 ### C3. Break it: turn the duplicate check off
 
@@ -568,6 +569,8 @@ one zone only, because the step stops at the first zone that fails; the fault ro
 too.
 
 </details>
+
+In the Monday and Tuesday sections, C3 is the last step of the section: A4, B3, B4, B5 and C4 are at home.
 
 ### C4. Find a planted bug
 
