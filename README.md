@@ -120,8 +120,8 @@ system act, the `Then` compares what the system shows with a number written in t
 
 ### A2. Write the three steps
 
-In your editor, open `features/steps/data_steps.py` and replace the comment lines that start at `# B5T2 Part A` with
-the `Given`. Each row of the table becomes one delivery:
+In your editor, open `features/steps/data_steps.py` and replace the comment that starts with `# B5T2 Part A` (all
+of its lines that start with `#`) with the `Given`. Each row of the table becomes one delivery:
 
 ```python
 @given("only these trip requests are received:")
@@ -132,7 +132,8 @@ def step_requests_table(context):
         context.deliveries.append(delivery)
 ```
 
-Open `features/steps/count_steps.py` and replace its comment lines that start at `# B5T2 Part A` with the `When` and the `Then`.
+Open `features/steps/count_steps.py` and replace its comment that starts with `# B5T2 Part A` (all of its `#`
+lines) with the `When` and the `Then`.
 `{time}` and `{zone:d}` are parameters: behave passes the text in that place of the line to the function, and `:d`
 makes it a number. The `Then` has two decorators so that `1 trip` and `2 trips` both match:
 
@@ -214,13 +215,14 @@ asks who you are, run the two `git config --global` lines it prints, with your n
 
 **What.** Ask your assistant for the rest of the step code of rule R010: the two examples of
 `features/js01_trips_per_zone.feature` under `@R010`. One of them already passes with your A2 steps. Paste the
-prompt of [`prompts/steps.md`](prompts/steps.md). When the assistant says it is done, run the four checks under
+prompt of [`prompts/steps.md`](prompts/steps.md), the text block under its title, into your assistant. When the assistant says it is done, run the four checks under
 "Check what it wrote" on that page yourself, in that order. Do not take the assistant's word that the scenarios
 pass.
 
 What you should see, check by check:
 
-1. `git status --short` lists files in `features/steps/` only.
+1. `git status --short` lists only files in `features/steps/` and, if the assistant changed it,
+   `features/environment.py`.
 2. The dry run's last lines have `untested` and no `undefined`.
 3. Both R010 scenarios pass, none fail.
 4. With the boundary bug in, `A request at the end of a period is in the next period` is under
@@ -237,11 +239,12 @@ git restore --source origin/steps-example -- features/steps/
 ```
 
 `git switch main` brings back your A2 commit, without the assistant's changes. `git restore --source` puts our
-step code in `features/steps/`. Run checks 2 to 4 of `prompts/steps.md` on it. To see what your assistant wrote,
-compare its branch with your A2 commit, then read our step code in `features/steps/` beside it:
+step code in `features/steps/`: `git status --short` now lists those step files as changed, and the commit after A5
+takes them. Run checks 2 to 4 of `prompts/steps.md` on it. To see what your assistant wrote, compare its branch with
+your A2 commit; then open our `features/steps/count_steps.py` in your editor and compare it with the diff:
 
 ```bash
-git diff main assistant-try -- features/steps/
+git diff main assistant-try -- features/steps/ features/environment.py
 ```
 
 **After A5,** on either path, commit the step code, so that Part C starts from a clean `git status`:
@@ -400,8 +403,8 @@ assistant at its root. Part C runs back in this repository.
    uv add duckdb pydantic
    ```
 
-3. The prompt reads the section Data of your team's `docs/design.md`, from Checkpoint 1. If your team repo has no
-   `docs/design.md`, create it with a heading `## Data` and one line that names your sample file.
+3. The prompt reads the section Data of your team's `docs/design.md`, from Checkpoint 1. If `docs/design.md` does
+   not exist, create it. If it has no `## Data` section, add one, with a line that names your sample file.
 4. Open [`prompts/simulate.md`](prompts/simulate.md). Fill in the four lines that start with `Our sample:`,
    `SIM01 shows:`, `Its shape:` and `Faults:` (each placeholder in angle brackets on them), and send the prompt to
    your assistant.
@@ -534,14 +537,15 @@ you see, not from the code that changed:
 
 1. Which rule's examples fail, and which rules pass? In `features/js01_trips_per_zone.feature`, compare the
    `event_time` and `received_time` columns of a failing example with those of a passing one.
-2. Run one failing example alone, with `--name` and its name in quotes, as in A1.
+2. Run one failing example alone (any one of them), with `--name` and its name in quotes, as in A1.
 3. See what the system counted. In `features/steps/count_steps.py`, add `print(context.counts)` as the first line
    of the `Then` that failed (`step_stored`, under `zone {zone:d} has …`). Run that example again with
    `--no-capture` added: behave then shows what the step prints. Which period holds the request: the one of its
    `event_time`, or the one of its `received_time`?
-4. In `src/rides/counting.py`, find the line that decides which period a request is counted in.
-5. **Predict**, in your notes, before you run it: does your C2 scenario on SIM01 pass or fail with this bug? Use
-   SIM01's late requests, from the truth:
+4. In `src/rides/counting.py`, read `count_requests` and find the line that decides which period a request is
+   counted in.
+5. **Predict**, in your notes, before you run it: does your C2 scenario on SIM01 pass or fail with this bug? Decide
+   from the times of SIM01's late requests, in the truth:
 
    ```bash
    uv run python sim/query.py SIM01 "
