@@ -542,13 +542,13 @@ file a night) from one requirement to the expected result of its scenario. Run
 `uv run python shapes/lakehouse/generate.py` first, unless you ran the lakehouse shape in B4.
 
 1. **Requirement**, written as in Checkpoint 1 (the IDs are the weather team's, not the rides example's):
-   **R110** WHEN a batch file sends a reading that an earlier batch file already sent THE SYSTEM SHALL store the
+   **R500** WHEN a batch file sends a reading that an earlier batch file already sent THE SYSTEM SHALL store the
    reading once.
 2. **Sample**: `shapes/lakehouse/sample/ghcn_daily_sample.csv`. One row is one weather station's reading of one
    element (TMAX, TMIN or PRCP) for one day.
-3. **Fault** that the requirement is about: `twice`, 3 of them (a reading sent again in the next batch file; the
-   seed fixes the count, as the shape's README says). The
-   shape's SIM01 also has `late`, `never` and `changed` faults, for its other requirements.
+3. **Fault** that the requirement is about: `twice`: 3 readings, each sent again in the next batch file (the seed
+   fixes the count, as the shape's README says). The shape's SIM01 also has `late`, `never` and `changed` faults,
+   for its other requirements.
 4. **Expected result**, from the truth, before any run: the readings stored for each station. A `never` reading is
    not delivered, so the system cannot store it: the query leaves it out.
 
@@ -580,7 +580,7 @@ file a night) from one requirement to the expected result of its scenario. Run
    | Line | Filled in |
    |---|---|
    | `Our sample:` | `shapes/lakehouse/sample/ghcn_daily_sample.csv`. It is one weather station's reading of one element (TMAX, TMIN or PRCP) for one day. |
-   | `SIM01 shows:` | R110: a reading that a later batch file sends again is stored once. |
+   | `SIM01 shows:` | R500: a reading that a later batch file sends again is stored once. |
    | `Its shape:` | a batch of files for each day (lakehouse) |
    | `Faults:` | 3 twice |
 
