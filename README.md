@@ -25,6 +25,11 @@ Do the steps under [In the section](#in-the-section) in the tutorial section, in
 before it. [After the section](#after-the-section) has the rest, to do at home. Nothing is handed in: what to
 take to your project is listed [at the end](#what-to-take-to-your-project).
 
+On the course companion: the [behave guide](https://cpsc436c-2026w1.github.io/lecture-reviews/project-behave.html)
+(rules, examples and step functions), the [Checkpoint 1 page](https://cpsc436c-2026w1.github.io/lecture-reviews/project-checkpoint1.html)
+(the rides example's requirements and features), and [project datasets](https://cpsc436c-2026w1.github.io/lecture-reviews/project-datasets.html)
+(the preview files B5 can use as your sample).
+
 ## Before the tutorial
 
 1. Install [uv](https://docs.astral.sh/uv/getting-started/installation/) and git.
@@ -46,7 +51,8 @@ take to your project is listed [at the end](#what-to-take-to-your-project).
 
 4. For A4 and B5 you use your coding assistant (A4 has a fallback without one). For A4, connecting it to the
    course server as in B5T1 is optional. For B5, also have your team repo cloned next to this one, with a small
-   sample of your data (your data set's preview file, or about 20 rows) in it.
+   sample of your data (your data set's preview file from
+   [project datasets](https://cpsc436c-2026w1.github.io/lecture-reviews/project-datasets.html), or about 20 rows) in it.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
