@@ -42,9 +42,9 @@ before it. [After the section](#after-the-section) has the rest, to do at home.
    You should see it finish without an error. Its last lines list the packages it installed, or say that it audited
    them; the names and numbers may differ. The first run downloads behave, DuckDB, Pydantic and pytest.
 
-4. For A4 and B5 you need your coding assistant. For A4, connect it to the course server as in B5T1. For B5, also
-   have your team repo cloned next to this one, with a small sample of your data (your data set's preview file, or
-   about 20 rows) in it.
+4. For A4 and B5 you need your coding assistant. For A4, connecting it to the course server as in B5T1 is optional.
+   For B5, also have your team repo cloned next to this one, with a small sample of your data (your data set's
+   preview file, or about 20 rows) in it.
 
 Every command below runs in the root of this repository, unless a step says your team repo.
 
@@ -98,6 +98,10 @@ def step_impl(context):
 
 `undefined` means no step function matches the line. behave prints a snippet for each: the decorator and the text it
 must match.
+
+The run ends with an error (exit status 1) because three steps have no code yet. That is the expected result of A1,
+not a setup problem. The snippets are only skeletons: each one raises `StepNotImplementedError`. Do not paste them:
+A2 gives you the code.
 
 <details>
 <summary>What happens when you do this step</summary>
@@ -174,13 +178,20 @@ What you should see: the example passed, with no failed and no undefined step. O
 3 steps passed, 0 failed, 40 skipped
 ```
 
-#### A4. The rest of R010, with your assistant
+#### A4. New rule R010, with your assistant
 
-**Where.** This repository, in a terminal at its root, with your coding assistant started there and connected to
-the course server as in
+A1 to A3 made the example of rule RF010 run. R010 is a different rule of the same feature: when a 5-minute period
+ends, the system stores one count of requested trips for each pickup zone that had a request in the period
+(`docs/requirements.md`). Its two examples reuse your A2 steps and need a few more, which your assistant writes.
+
+**Where.** This repository, in a terminal at its root, with your coding assistant started there. The connection to
+the course server is optional: the assistant can write the steps from this repository alone; connected, it can also
+read the course's pages. To connect it, do as in
 [B5T1, Step 1](https://github.com/cpsc436c-2026w1/b5-t1-mcp-evals/blob/main/mcp/README.md#step-1-connect-your-assistant).
 This repository has the same example files: `.mcp.json.example` for Claude
-Code, `.kiro/settings/mcp.json.example` for Kiro. Your copy of either does not show in `git status`.
+Code, `.kiro/settings/mcp.json.example` for Kiro. Your copy of either does not show in `git status`. If your
+assistant cannot connect or is not available, commit your A2 steps as below, then take our step code: the fallback
+at the end of A4.
 
 **First, commit your A2 steps.** They stay on your `main`. Then `git status` and `git diff` show only what your
 assistant changes:
@@ -193,7 +204,7 @@ git commit -m "my A2 steps"
 You should see a line with `my A2 steps`; `git status` then says `nothing to commit, working tree clean`. If git
 asks who you are, run the two `git config --global` lines it prints, with your name and email, and commit again.
 
-**What.** Ask your assistant for the rest of the step code of rule R010: the two examples of
+**What.** Ask your assistant for the step code of rule R010: the two examples of
 `features/js01_trips_per_zone.feature` under `@R010`. One of them already passes with your A2 steps. Paste the
 prompt of [`prompts/steps.md`](prompts/steps.md), the text block under its title, into your assistant. When the assistant says it is done, run the four checks under
 "Check what it wrote" on that page yourself, in that order. Do not take the assistant's word that the scenarios
@@ -212,10 +223,10 @@ What you should see, check by check:
 Then read each `Then` step it wrote, as the end of `prompts/steps.md` says: the expected number comes from the line
 of the feature, the actual number from our code.
 
-**If your assistant fails check 2, 3 or 4 (after any undo of check 1), refuses, or is still working when your TA
-moves the section on,** take our step code. First stop the assistant: cancel its run (in Claude Code, press Esc)
-and wait until it shows no running command, so that it changes no more files. Then keep its attempt on a branch of
-its own and take our step code:
+**If your assistant cannot connect or is not available, fails check 2, 3 or 4 (after any undo of check 1), refuses,
+or is still working when your TA moves the section on,** take our step code. First stop the assistant, if it is
+running: cancel its run (in Claude Code, press Esc) and wait until it shows no running command, so that it changes
+no more files. Then keep its attempt on a branch of its own and take our step code:
 
 ```bash
 git switch -c assistant-try
@@ -229,7 +240,8 @@ The first three lines take the assistant's changes, new files included, to the b
 them there. `git switch main` brings back your A2 commit, without the assistant's changes. `git restore --source` puts our
 step code in `features/steps/`: `git status --short` now lists those step files as changed, and the commit after A4
 takes them. Run checks 2 to 4 of `prompts/steps.md` on it. To see what your assistant wrote, compare its branch with
-your A2 commit; then open our `features/steps/count_steps.py` in your editor and compare it with the diff:
+your A2 commit (with no assistant, the diff is empty); then open our `features/steps/count_steps.py` in your editor
+and compare it with the diff:
 
 ```bash
 git diff main assistant-try -- features/steps/ features/environment.py
@@ -245,6 +257,10 @@ git commit -m "R010 steps"
 With these steps in place, A5's command, after the section, shows no error: R010's first example passes too.
 
 ### Part B: simulate your own incoming batch
+
+- **Deliveries**: what the system receives, in the order it arrives, repeats and late arrivals included.
+- **Truth** (`_truth/`): each event once, as it happened, and the faults the generator put in. The expected answers
+  are computed from the truth; the system never reads it.
 
 **Goal.** A simulated data set that you can trust: the same command writes the same files, every line matches your
 event models, and the truth says what happened, so that a `Then` can state its value before the run. In the section
@@ -273,10 +289,9 @@ Now look at SIM01 in your editor, one idea at a time.
    faults by kind add up to that line's fault records.
 2. **What the system receives, and what happened.** Open
    `sim/data/SIM01/trip-events/dt=2026-11-23/hour=09/deliveries.jsonl` and `sim/data/SIM01/_truth/events.jsonl`,
-   and compare their first lines. Why: the system reads only the deliveries, in the order received; the truth holds
-   each event once, as it happened, and the system never reads it. What you should see: the same `event_id` with
-   the same fields, and the delivery has one field more, `received_time`, at or after its `event_time`. The folders
-   `dt=` and `hour=` are the day and hour of `received_time`.
+   and compare their first lines. Why: the same event, as the system receives it and as it happened. What you
+   should see: the same `event_id` with the same fields, and the delivery has one field more, `received_time`, at
+   or after its `event_time`. The folders `dt=` and `hour=` are the day and hour of `received_time`.
 3. **The faults.** Open `sim/data/SIM01/_truth/faults.jsonl`. Why: each fault the generator put in is written down
    with the event it is about, so a `Then` can count with it. There are four kinds:
    - `twice`: the event is delivered one more time.
@@ -521,8 +536,55 @@ This data set has all four fault kinds of the standards. For the other shapes, r
 
 ### B5. Your own SIM01, with your assistant
 
-B5 runs in your team repo, next to this one. Move your terminal there (`cd ../<your team repo>`) and start your
-assistant at its root. C4 runs back in this repository.
+**First, a worked example, in this repository.** It takes the lakehouse shape of B4 (weather stations, one batch
+file a night) from one requirement to the expected result of its scenario. If you ran another shape in B4, run
+`uv run python shapes/lakehouse/generate.py` first.
+
+1. **Requirement**, written as in Checkpoint 1: **RF010** Every reading must be stored exactly once, even when a
+   later batch file sends it again.
+2. **Sample**: `shapes/lakehouse/sample/ghcn_daily_sample.csv`. One row is one weather station's reading of one
+   element (TMAX, TMIN or PRCP) for one day.
+3. **Fault** that the requirement is about: `twice`, 3 of them (a reading sent again in the next batch file). The
+   shape's SIM01 also has `late`, `never` and `changed` faults, for its other requirements.
+4. **Expected result**, from the truth, before any run: the readings stored for each station. A `never` reading is
+   not delivered, so the system cannot store it: the query leaves it out.
+
+   ```bash
+   uv run python sim/query.py SIM01 --root shapes/lakehouse "
+     SELECT t.station_id, count(*) AS readings, count(f.fault) AS sent_twice
+     FROM truth t LEFT JOIN faults f ON f.event_id = t.event_id AND f.fault = 'twice'
+     WHERE t.event_id NOT IN (SELECT event_id FROM faults WHERE fault = 'never')
+     GROUP BY 1 ORDER BY 1"
+   ```
+
+   What you should see: one row for each station of the sample; the `sent_twice` values add up to the 3 `twice`
+   faults. A system that stores a reading again when it is sent twice shows `readings` + `sent_twice` for that
+   station, more than `readings`.
+5. **Scenario** it becomes, with a station whose `sent_twice` is above 0 in place of `<station>`, and its
+   `readings` in place of `<n>`:
+
+   ```gherkin
+   Scenario: Every reading of SIM01 stored once
+     Given the deliveries of SIM01
+     When every batch file of SIM01 is loaded
+     Then station <station> has <n> readings stored
+   ```
+
+   This repository has no lakehouse system and no step code for these lines, so you do not run this scenario here.
+   In a team repo, it runs like C2.
+6. **The four lines of the prompt** (`prompts/simulate.md`), filled in for this example:
+
+   | Line | Filled in |
+   |---|---|
+   | `Our sample:` | `shapes/lakehouse/sample/ghcn_daily_sample.csv`. It is one weather station's reading of one element (TMAX, TMIN or PRCP) for one day. |
+   | `SIM01 shows:` | RF010: a reading that a later batch file sends again is stored once. |
+   | `Its shape:` | a batch of files for each day (lakehouse) |
+   | `Faults:` | 3 twice |
+
+For your project, do the same with one of your Checkpoint 1 requirements.
+
+**Then your own, in your team repo.** The rest of B5 runs in your team repo, next to this one. Move your terminal
+there (`cd ../<your team repo>`) and start your assistant at its root. C4 runs back in this repository.
 
 1. Copy three files from this repository into your team repo: `docs/simulation-standards.md` to `docs/`, and
    `sim/check.py` and `sim/query.py` to `sim/`. On macOS or Linux, from your team repo root:
@@ -670,4 +732,9 @@ AWS.
 - One step file of your own for one rule of your features, written like A2.
 - Your SIM01: `src/<package>/events.py`, `sim/generate.py` and its bullet in `docs/design.md`. If your team follows
   the simulation standards (they are guidance, not required), also `sim/check.py` printing `OK`.
-- One scenario like C2, with its `Then` values taken from your truth with `sim/query.py`.
+- One scenario like C2, with its `Then` values taken from your truth with `sim/query.py`. To run it on your own
+  deliveries, write the three steps in your team repo, as you did in A2: a `Given` that reads every
+  `deliveries.jsonl` under your `sim/data/SIM01/`, in the order received, and not `_truth/` (ours,
+  `Given the deliveries of SIM01` in `features/steps/data_steps.py`, reads only the rides data); a `When` that runs
+  your code on them; a `Then` that compares what your code gives with the number from your truth. Then run it with
+  `uv run behave --no-snippets features/<your feature file>`.
